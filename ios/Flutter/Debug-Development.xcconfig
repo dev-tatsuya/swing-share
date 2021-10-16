@@ -1,0 +1,4 @@
+#include "Debug.xcconfig"
+#include "Development.xcconfig"
+PRODUCT_BUNDLE_IDENTIFIER=com.swingshare.app.development.debug
+DISPLAY_NAME=Debugスイングシェア

@@ -31,3 +31,8 @@ Runner/GeneratedPluginRegistrant.*
 !default.mode2v3
 !default.pbxuser
 !default.perspectivev3
+
+**/dgph
+Runner/GoogleService-Info.plist
+Runner/Firebase/GoogleService-Info-Production.plist
+Runner/Firebase/GoogleService-Info-Development.plist
