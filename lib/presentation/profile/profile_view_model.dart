@@ -9,7 +9,7 @@ import 'package:swing_share/infra/model/profile.dart' as data_model;
 import 'package:swing_share/infra/repository/repository_impl.dart';
 import 'package:swing_share/presentation/login/login_view_model.dart';
 
-final profileVm = Provider((ref) => ProfileViewModel(ref.read));
+final profileVm = Provider.autoDispose((ref) => ProfileViewModel(ref.read));
 
 class ProfileViewModel {
   ProfileViewModel(this._read);

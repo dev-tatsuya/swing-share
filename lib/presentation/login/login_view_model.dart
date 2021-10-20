@@ -8,7 +8,7 @@ import 'package:swing_share/infra/model/profile.dart';
 import 'package:swing_share/infra/repository/repository_impl.dart';
 import 'package:swing_share/infra/service/auth_service_impl.dart';
 
-final loginVm = Provider((ref) => LoginViewModel(ref.read));
+final loginVm = Provider.autoDispose((ref) => LoginViewModel(ref.read));
 
 const defaultName = '匿名';
 const defaultPhotoUrl =
@@ -73,6 +73,7 @@ class LoginViewModel {
   Future<void> _setUser(User? user) async {
     await _read(repo).setProfile(
       Profile(
+        id: user?.uid,
         name: user?.displayName ?? defaultName,
         thumbnailPath: user?.photoURL ?? defaultPhotoUrl,
       ),

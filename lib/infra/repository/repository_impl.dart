@@ -11,10 +11,14 @@ import 'package:swing_share/presentation/login/login_view_model.dart';
 
 String get documentIdFromCurrentDate => DateTime.now().toIso8601String();
 
-final repo = Provider<Repository>((ref) {
-  final auth = ref.watch(authService);
+final repo = Provider.autoDispose<Repository>((ref) {
+  final auth = ref.watch(authStateChangesProvider);
 
-  return RepositoryImpl(uid: auth.currentUser?.uid);
+  if (auth.asData?.value?.uid != null) {
+    return RepositoryImpl(uid: auth.asData!.value!.uid);
+  }
+
+  return RepositoryImpl();
 });
 
 class RepositoryImpl implements Repository {
@@ -59,7 +63,7 @@ class RepositoryImpl implements Repository {
 
   @override
   Future<void> setProfile(Profile profile) async {
-    _service.setData(path: APIPath.user(uid!), data: profile.toMap());
+    _service.setData(path: APIPath.user(profile.id!), data: profile.toMap());
   }
 
   @override
