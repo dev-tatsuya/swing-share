@@ -20,9 +20,9 @@ class BasePage extends ConsumerStatefulWidget {
 class _BasePageState extends ConsumerState<BasePage> {
   int _selectedIndex = 0;
   final _bodies = [
-    HomePage(),
+    const HomePage(),
     const SizedBox(),
-    ProfilePage(),
+    const ProfilePage(),
   ];
 
   void _onItemTapped(int index, {required bool isLogin}) {

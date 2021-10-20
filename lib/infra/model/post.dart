@@ -19,13 +19,10 @@ class Post {
     Map<String, dynamic>? data,
     String documentId,
   ) {
-    print('data: $data');
-
     if (data == null) {
       return Post();
     }
 
-    // final authorRef = data['authorRef'] as String?;
     final body = data['body'] as String?;
     DateTime? createdAt;
     if (data['createdAt'] is Timestamp) {
@@ -33,7 +30,6 @@ class Post {
     }
 
     final map = data['author'] as Map<String, dynamic>?;
-    print('map: $map');
 
     return Post(
       id: documentId,

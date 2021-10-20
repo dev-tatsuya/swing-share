@@ -7,6 +7,7 @@ import 'package:swing_share/domain/repository/repository.dart';
 import 'package:swing_share/infra/model/post.dart' as data_model;
 import 'package:swing_share/infra/model/profile.dart' as data_model;
 import 'package:swing_share/infra/repository/repository_impl.dart';
+import 'package:swing_share/presentation/login/login_view_model.dart';
 
 final profileVm = Provider((ref) => ProfileViewModel(ref.read));
 
@@ -21,16 +22,15 @@ class ProfileViewModel {
       _repo.userPostsStream(),
       (data_model.Profile profile, List<data_model.Post> posts) => UserPosts(
         profile: Profile(
-          name: profile.name ?? '匿名',
-          thumbnailPath: profile.thumbnailPath ??
-              'https://knsoza1.com/wp-content/uploads/2020/07/70b3dd52350bf605f1bb4078ef79c9b9.png',
+          name: profile.name ?? defaultName,
+          thumbnailPath: profile.thumbnailPath ?? defaultPhotoUrl,
         ),
         posts: posts
             .map((e) => Post(
                   profile: Profile(
-                    name: e.author?['name'] ?? '匿名',
-                    thumbnailPath: e.author?['thumbnailPath'] ??
-                        'https://knsoza1.com/wp-content/uploads/2020/07/70b3dd52350bf605f1bb4078ef79c9b9.png',
+                    name: e.author?['name'] ?? defaultName,
+                    thumbnailPath:
+                        e.author?['thumbnailPath'] ?? defaultPhotoUrl,
                   ),
                   body: e.body ?? '',
                   createdAt: e.createdAt,

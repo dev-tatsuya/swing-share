@@ -6,7 +6,6 @@ import 'package:swing_share/domain/model/post.dart';
 import 'package:swing_share/domain/model/profile.dart';
 import 'package:swing_share/domain/model/user_posts.dart';
 import 'package:swing_share/presentation/common/widget/timeline.dart';
-import 'package:swing_share/presentation/home/home_page.dart';
 import 'package:swing_share/presentation/login/login_view_model.dart';
 import 'package:swing_share/presentation/profile/profile_view_model.dart';
 
@@ -19,19 +18,8 @@ class ProfileState {
   final List<Post> posts;
 }
 
-final mockProfile = Profile(
-  name: '織田信長',
-  thumbnailPath:
-      'https://knsoza1.com/wp-content/uploads/2020/07/70b3dd52350bf605f1bb4078ef79c9b9.png',
-);
-
 class ProfilePage extends ConsumerWidget {
-  ProfilePage({Key? key}) : super(key: key);
-
-  final state = ProfileState(
-    profile: mockProfile,
-    posts: mockPosts,
-  );
+  const ProfilePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ref) {
@@ -58,11 +46,11 @@ class ProfilePage extends ConsumerWidget {
                     height: 100,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: NetworkImage(data?.profile.thumbnailPath ??
-                            'https://knsoza1.com/wp-content/uploads/2020/07/70b3dd52350bf605f1bb4078ef79c9b9.png'),
+                        image: NetworkImage(
+                            data?.profile.thumbnailPath ?? defaultPhotoUrl),
                         fit: BoxFit.cover,
                       ),
-                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      borderRadius: const BorderRadius.all(Radius.circular(50)),
                     ),
                   ),
                 ),

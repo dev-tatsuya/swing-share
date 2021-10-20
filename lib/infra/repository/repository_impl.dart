@@ -7,6 +7,7 @@ import 'package:swing_share/infra/model/profile.dart';
 import 'package:swing_share/infra/service/auth_service_impl.dart';
 import 'package:swing_share/infra/service/firestore/api_path.dart';
 import 'package:swing_share/infra/service/firestore/firestore_service.dart';
+import 'package:swing_share/presentation/login/login_view_model.dart';
 
 String get documentIdFromCurrentDate => DateTime.now().toIso8601String();
 
@@ -35,15 +36,15 @@ class RepositoryImpl implements Repository {
       builder: (data, documentId) {
         final model = Post.fromMap(data, documentId);
         final author = model.author;
-        final name = author?['name'] ?? '匿名';
-        final thumbnailPath = author?['thumbnailPath'] ??
-            'https://knsoza1.com/wp-content/uploads/2020/07/70b3dd52350bf605f1bb4078ef79c9b9.png';
+        final name = author?['name'] ?? defaultName;
+        final thumbnailPath = author?['thumbnailPath'] ?? defaultPhotoUrl;
 
         return domain.Post(
             profile: domain.Profile(name: name, thumbnailPath: thumbnailPath),
             body: model.body ?? '',
             createdAt: model.createdAt);
       },
+      sort: (lhs, rhs) => rhs.createdAt!.compareTo(lhs.createdAt!),
     );
   }
 
@@ -52,7 +53,13 @@ class RepositoryImpl implements Repository {
     return _service.collectionStream<Post>(
       path: APIPath.posts(uid!),
       builder: (data, documentId) => Post.fromMap(data, documentId),
+      sort: (lhs, rhs) => rhs.createdAt!.compareTo(lhs.createdAt!),
     );
+  }
+
+  @override
+  Future<void> setProfile(Profile profile) async {
+    _service.setData(path: APIPath.user(uid!), data: profile.toMap());
   }
 
   @override

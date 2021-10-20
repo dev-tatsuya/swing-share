@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:swing_share/presentation/entry/entry_view_model.dart';
+import 'package:swing_share/util/string.dart';
 
 class EntryPage extends ConsumerStatefulWidget {
   const EntryPage({Key? key}) : super(key: key);
@@ -13,7 +12,7 @@ class EntryPage extends ConsumerStatefulWidget {
 
 class _EntryPageState extends ConsumerState<EntryPage> {
   late TextEditingController _ctrl;
-  String get _body => _ctrl.text;
+  String get _body => trimLastBlankLine(_ctrl.text);
 
   @override
   void initState() {
@@ -45,7 +44,6 @@ class _EntryPageState extends ConsumerState<EntryPage> {
                     visible: _body.isNotEmpty,
                     child: GestureDetector(
                       onTap: () async {
-                        log('onTap: $_body');
                         await ref.read(entryVm).post(_body);
                         Navigator.pop(context);
                       },
