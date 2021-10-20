@@ -43,6 +43,32 @@ class FirestoreService {
     });
   }
 
+  Stream<List<T>> collectionGroupStream<T>({
+    required String path,
+    required T Function(Map<String, dynamic> data, String documentId) builder,
+    Query Function(Query query)? queryBuilder,
+    int Function(T lhs, T rhs)? sort,
+  }) {
+    Query query = FirebaseFirestore.instance.collectionGroup(path);
+    if (queryBuilder != null) {
+      query = queryBuilder(query);
+    }
+    final snapshots = query.snapshots();
+    return snapshots.map((snapshot) {
+      final result = snapshot.docs
+          .map((snapshot) {
+            return builder(
+                snapshot.data()! as Map<String, dynamic>, snapshot.id);
+          })
+          .where((value) => value != null)
+          .toList();
+      if (sort != null) {
+        result.sort(sort);
+      }
+      return result;
+    });
+  }
+
   Stream<T> documentStream<T>({
     required String path,
     T Function(Map<String, dynamic>? data, String documentID)? builder,
@@ -50,5 +76,13 @@ class FirestoreService {
     final reference = FirebaseFirestore.instance.doc(path);
     final snapshots = reference.snapshots();
     return snapshots.map((snapshot) => builder!(snapshot.data(), snapshot.id));
+  }
+
+  Future<T> documentFuture<T>({
+    required String path,
+    required T Function(Map<String, dynamic>? data, String documentID)? builder,
+  }) async {
+    final snapshot = await FirebaseFirestore.instance.doc(path).get();
+    return builder!(snapshot.data(), snapshot.id);
   }
 }

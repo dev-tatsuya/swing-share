@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:swing_share/domain/model/post.dart';
 import 'package:swing_share/domain/model/profile.dart';
+import 'package:swing_share/infra/repository/repository_impl.dart';
 import 'package:swing_share/presentation/common/widget/timeline.dart';
 import 'package:swing_share/presentation/entry/entry_page.dart';
 
@@ -16,7 +18,7 @@ const mockBody = 'JIG はソースコードで表現したドメインモデル�
 
 final mockPosts = [
   Post(
-    profile: Profile(
+    profile: const Profile(
       name: '織田信長',
       thumbnailPath:
           'https://knsoza1.com/wp-content/uploads/2020/07/70b3dd52350bf605f1bb4078ef79c9b9.png',
@@ -25,7 +27,7 @@ final mockPosts = [
     createdAt: DateTime.now(),
   ),
   Post(
-    profile: Profile(
+    profile: const Profile(
       name: '明智光秀',
       thumbnailPath:
           'https://knsoza1.com/wp-content/uploads/2020/07/7c820207265c90f9df0c2f0b91b2c4a8.png',
@@ -34,7 +36,7 @@ final mockPosts = [
     createdAt: DateTime.now(),
   ),
   Post(
-    profile: Profile(
+    profile: const Profile(
       name: '豊臣秀吉',
       thumbnailPath:
           'https://knsoza1.com/wp-content/uploads/2020/07/8d27ad3552fd86901f4976429ad22ce2.png',
@@ -43,7 +45,7 @@ final mockPosts = [
     createdAt: DateTime.now(),
   ),
   Post(
-    profile: Profile(
+    profile: const Profile(
       name: '徳川家康',
       thumbnailPath:
           'https://knsoza1.com/wp-content/uploads/2020/07/42ff381a6e93f93d64a6c03312a370a6.png',
@@ -53,13 +55,13 @@ final mockPosts = [
   ),
 ];
 
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerWidget {
   HomePage({Key? key}) : super(key: key);
 
   final state = HomeState(mockPosts);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     return Scaffold(
       appBar: AppBar(
         title: GestureDetector(
@@ -74,7 +76,11 @@ class HomePage extends StatelessWidget {
         ),
         toolbarHeight: 44,
       ),
-      body: Timeline(posts: state.posts),
+      body: StreamBuilder<List<Post>>(
+          stream: ref.watch(repo).allPostsStream(),
+          builder: (context, snapshot) {
+            return Timeline(posts: snapshot.data);
+          }),
     );
   }
 }

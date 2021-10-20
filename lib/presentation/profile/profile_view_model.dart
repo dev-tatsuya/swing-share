@@ -28,8 +28,8 @@ class ProfileViewModel {
         posts: posts
             .map((e) => Post(
                   profile: Profile(
-                    name: profile.name ?? '匿名',
-                    thumbnailPath: profile.thumbnailPath ??
+                    name: e.author?['name'] ?? '匿名',
+                    thumbnailPath: e.author?['thumbnailPath'] ??
                         'https://knsoza1.com/wp-content/uploads/2020/07/70b3dd52350bf605f1bb4078ef79c9b9.png',
                   ),
                   body: e.body ?? '',

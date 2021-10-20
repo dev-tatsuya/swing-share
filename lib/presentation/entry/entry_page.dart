@@ -1,15 +1,17 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:swing_share/presentation/entry/entry_view_model.dart';
 
-class EntryPage extends StatefulWidget {
+class EntryPage extends ConsumerStatefulWidget {
   const EntryPage({Key? key}) : super(key: key);
 
   @override
-  State<EntryPage> createState() => _EntryPageState();
+  _EntryPageState createState() => _EntryPageState();
 }
 
-class _EntryPageState extends State<EntryPage> {
+class _EntryPageState extends ConsumerState<EntryPage> {
   late TextEditingController _ctrl;
   String get _body => _ctrl.text;
 
@@ -42,8 +44,10 @@ class _EntryPageState extends State<EntryPage> {
                   child: Visibility(
                     visible: _body.isNotEmpty,
                     child: GestureDetector(
-                      onTap: () {
+                      onTap: () async {
                         log('onTap: $_body');
+                        await ref.read(entryVm).post(_body);
+                        Navigator.pop(context);
                       },
                       child: const Padding(
                         padding:

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:swing_share/domain/model/post.dart';
-import 'package:swing_share/domain/model/profile.dart';
 
 class Timeline extends StatelessWidget {
   const Timeline({
@@ -21,51 +21,72 @@ class Timeline extends StatelessWidget {
     );
   }
 
-  Column _buildContent(Post post) {
+  Widget _buildContent(Post post) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildHeader(post.profile, post.createdAt),
-        _buildBody(post.body),
-        const Padding(
-          padding: EdgeInsets.only(top: 8),
-          child: Divider(height: 0),
-        ),
-      ],
-    );
-  }
-
-  Padding _buildBody(String body) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: Text(body),
-    );
-  }
-
-  Row _buildHeader(Profile profile, DateTime? createdAt) {
-    return Row(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(profile.thumbnailPath),
-                fit: BoxFit.cover,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 12, top: 12, right: 8, bottom: 12),
+              child: Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(post.profile.thumbnailPath),
+                    fit: BoxFit.cover,
+                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(24)),
+                ),
               ),
-              borderRadius: const BorderRadius.all(Radius.circular(50)),
             ),
-          ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8, bottom: 12),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            post.profile.name,
+                            style: const TextStyle(
+                              // fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                post.createdAt.toString(),
+                                style: const TextStyle(
+                                    fontSize: 14, color: Colors.white60),
+                              ),
+                              const SizedBox(width: 4),
+                              const Icon(Icons.more_horiz,
+                                  size: 24, color: Colors.white60),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 12),
+                      child: Text(post.body.replaceAll('\\n', '\n')),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-        Text(profile.name),
-        const Spacer(),
-        Text(createdAt.toString()),
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Icon(Icons.more_horiz),
-        ),
+        const Divider(height: 0),
       ],
     );
   }
