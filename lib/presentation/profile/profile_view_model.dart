@@ -27,6 +27,7 @@ class ProfileViewModel {
         ),
         posts: posts
             .map((e) => Post(
+                  id: e.id,
                   profile: Profile(
                     name: e.author?['name'] ?? defaultName,
                     thumbnailPath:

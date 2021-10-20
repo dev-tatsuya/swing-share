@@ -44,9 +44,11 @@ class RepositoryImpl implements Repository {
         final thumbnailPath = author?['thumbnailPath'] ?? defaultPhotoUrl;
 
         return domain.Post(
-            profile: domain.Profile(name: name, thumbnailPath: thumbnailPath),
-            body: model.body ?? '',
-            createdAt: model.createdAt);
+          id: model.id,
+          profile: domain.Profile(name: name, thumbnailPath: thumbnailPath),
+          body: model.body ?? '',
+          createdAt: model.createdAt,
+        );
       },
       sort: (lhs, rhs) => rhs.createdAt!.compareTo(lhs.createdAt!),
     );

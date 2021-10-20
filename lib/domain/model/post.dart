@@ -6,6 +6,7 @@ part 'post.freezed.dart';
 @freezed
 abstract class Post with _$Post {
   const factory Post({
+    required String? id,
     required Profile profile,
     required String body,
     required DateTime? createdAt,

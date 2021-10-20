@@ -17,10 +17,12 @@ class _$PostTearOff {
   const _$PostTearOff();
 
   _Post call(
-      {required Profile profile,
+      {required String? id,
+      required Profile profile,
       required String body,
       required DateTime? createdAt}) {
     return _Post(
+      id: id,
       profile: profile,
       body: body,
       createdAt: createdAt,
@@ -33,6 +35,7 @@ const $Post = _$PostTearOff();
 
 /// @nodoc
 mixin _$Post {
+  String? get id => throw _privateConstructorUsedError;
   Profile get profile => throw _privateConstructorUsedError;
   String get body => throw _privateConstructorUsedError;
   DateTime? get createdAt => throw _privateConstructorUsedError;
@@ -45,7 +48,7 @@ mixin _$Post {
 abstract class $PostCopyWith<$Res> {
   factory $PostCopyWith(Post value, $Res Function(Post) then) =
       _$PostCopyWithImpl<$Res>;
-  $Res call({Profile profile, String body, DateTime? createdAt});
+  $Res call({String? id, Profile profile, String body, DateTime? createdAt});
 
   $ProfileCopyWith<$Res> get profile;
 }
@@ -60,11 +63,16 @@ class _$PostCopyWithImpl<$Res> implements $PostCopyWith<$Res> {
 
   @override
   $Res call({
+    Object? id = freezed,
     Object? profile = freezed,
     Object? body = freezed,
     Object? createdAt = freezed,
   }) {
     return _then(_value.copyWith(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
       profile: profile == freezed
           ? _value.profile
           : profile // ignore: cast_nullable_to_non_nullable
@@ -93,7 +101,7 @@ abstract class _$PostCopyWith<$Res> implements $PostCopyWith<$Res> {
   factory _$PostCopyWith(_Post value, $Res Function(_Post) then) =
       __$PostCopyWithImpl<$Res>;
   @override
-  $Res call({Profile profile, String body, DateTime? createdAt});
+  $Res call({String? id, Profile profile, String body, DateTime? createdAt});
 
   @override
   $ProfileCopyWith<$Res> get profile;
@@ -110,11 +118,16 @@ class __$PostCopyWithImpl<$Res> extends _$PostCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object? id = freezed,
     Object? profile = freezed,
     Object? body = freezed,
     Object? createdAt = freezed,
   }) {
     return _then(_Post(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
       profile: profile == freezed
           ? _value.profile
           : profile // ignore: cast_nullable_to_non_nullable
@@ -135,8 +148,13 @@ class __$PostCopyWithImpl<$Res> extends _$PostCopyWithImpl<$Res>
 
 class _$_Post implements _Post {
   const _$_Post(
-      {required this.profile, required this.body, required this.createdAt});
+      {required this.id,
+      required this.profile,
+      required this.body,
+      required this.createdAt});
 
+  @override
+  final String? id;
   @override
   final Profile profile;
   @override
@@ -146,13 +164,15 @@ class _$_Post implements _Post {
 
   @override
   String toString() {
-    return 'Post(profile: $profile, body: $body, createdAt: $createdAt)';
+    return 'Post(id: $id, profile: $profile, body: $body, createdAt: $createdAt)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _Post &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.profile, profile) ||
                 const DeepCollectionEquality()
                     .equals(other.profile, profile)) &&
@@ -166,6 +186,7 @@ class _$_Post implements _Post {
   @override
   int get hashCode =>
       runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(id) ^
       const DeepCollectionEquality().hash(profile) ^
       const DeepCollectionEquality().hash(body) ^
       const DeepCollectionEquality().hash(createdAt);
@@ -178,10 +199,13 @@ class _$_Post implements _Post {
 
 abstract class _Post implements Post {
   const factory _Post(
-      {required Profile profile,
+      {required String? id,
+      required Profile profile,
       required String body,
       required DateTime? createdAt}) = _$_Post;
 
+  @override
+  String? get id => throw _privateConstructorUsedError;
   @override
   Profile get profile => throw _privateConstructorUsedError;
   @override
