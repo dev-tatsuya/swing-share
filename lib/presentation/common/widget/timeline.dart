@@ -27,7 +27,10 @@ class Timeline extends ConsumerWidget {
                   ref.read(homeVm).pushDetailPage(e);
                 }
               },
-              child: TimelineContent(e),
+              child: Container(
+                color: Colors.transparent,
+                child: TimelineContent(e),
+              ),
             ),
           ),
         ],

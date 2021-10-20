@@ -50,9 +50,7 @@ class _EntryPageState extends ConsumerState<EntryPage> {
                       child: const Padding(
                         padding:
                             EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        child: Text(
-                          '投稿',
-                        ),
+                        child: Text('投稿'),
                       ),
                     ),
                   ),
@@ -64,6 +62,7 @@ class _EntryPageState extends ConsumerState<EntryPage> {
         toolbarHeight: 44,
       ),
       body: TextField(
+        style: const TextStyle(fontSize: 16.4),
         autofocus: true,
         cursorColor: Colors.blueGrey,
         keyboardType: TextInputType.multiline,
@@ -71,6 +70,7 @@ class _EntryPageState extends ConsumerState<EntryPage> {
         maxLines: 10,
         controller: _ctrl,
         decoration: const InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(12, 16, 12, 16),
           border: OutlineInputBorder(
             borderSide: BorderSide.none,
           ),

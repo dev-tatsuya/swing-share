@@ -4,9 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:swing_share/presentation/entry/entry_page.dart';
-import 'package:swing_share/presentation/home/home_page.dart';
 import 'package:swing_share/presentation/login/login_sheet.dart';
-import 'package:swing_share/presentation/profile/profile_page.dart';
 import 'package:swing_share/router/home_router.dart';
 import 'package:swing_share/router/profile_router.dart';
 
@@ -41,13 +39,6 @@ class BasePage extends ConsumerStatefulWidget {
 
 class _BasePageState extends ConsumerState<BasePage> {
   int _selectedIndex = 0;
-  TabItem get currentTab => TabItem.values[_selectedIndex];
-
-  final _bodies = [
-    const HomePage(),
-    const SizedBox(),
-    const ProfilePage(),
-  ];
 
   Widget _buildOffstage(TabItem tabItem, TabItem currentTab) {
     return Offstage(
@@ -101,10 +92,13 @@ class _BasePageState extends ConsumerState<BasePage> {
 
   List<Widget> _buildOffstages(bool isLogin) {
     return [
-      _buildOffstage(TabItem.home, currentTab),
-      if (isLogin) _buildOffstage(TabItem.profile, currentTab),
+      _buildOffstage(TabItem.home, currentTab(isLogin)),
+      if (isLogin) _buildOffstage(TabItem.profile, currentTab(isLogin)),
     ];
   }
+
+  TabItem currentTab(bool isLogin) =>
+      TabItem.values[isLogin ? _selectedIndex : 0];
 
   @override
   Widget build(BuildContext context) {
