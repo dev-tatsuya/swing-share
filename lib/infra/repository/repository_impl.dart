@@ -96,4 +96,30 @@ class RepositoryImpl implements Repository {
       builder: (data, documentId) => Profile.fromMap(data, documentId),
     );
   }
+
+  @override
+  Future<void> setComment(String body) {
+    // TODO: implement setComment
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> deleteComment() {
+    // TODO: implement deleteComment
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<List<Post>> postCommentsStream(String postId) {
+    return _service.collectionStream<Post>(
+      path: APIPath.comments(uid!, postId),
+      builder: (data, documentId) => Post.fromMap(data, documentId),
+    );
+  }
+
+  @override
+  Stream<List<Post>> userCommentStream() {
+    // TODO: implement userCommentStream
+    throw UnimplementedError();
+  }
 }

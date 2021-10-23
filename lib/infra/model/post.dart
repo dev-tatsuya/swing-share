@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:swing_share/domain/model/post.dart' as domain;
+import 'package:swing_share/domain/model/profile.dart';
+import 'package:swing_share/presentation/login/login_view_model.dart';
 
 class Post {
   Post({
@@ -48,4 +51,16 @@ class Post {
         'body': body,
         'createdAt': createdAt,
       };
+
+  domain.Post toEntity() {
+    return domain.Post(
+      id: id,
+      profile: Profile(
+        name: author?['name'] ?? defaultName,
+        thumbnailPath: author?['thumbnailPath'] ?? defaultPhotoUrl,
+      ),
+      body: body ?? '',
+      createdAt: createdAt,
+    );
+  }
 }

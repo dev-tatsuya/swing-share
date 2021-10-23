@@ -1,16 +1,19 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:swing_share/domain/model/post.dart';
 import 'package:swing_share/presentation/comment/comment_entry_page.dart';
 import 'package:swing_share/presentation/comment/comment_list.dart';
+import 'package:swing_share/presentation/detail/detail_view_model.dart';
 import 'package:swing_share/util/color.dart';
 
-class DetailPage extends StatelessWidget {
+class DetailPage extends ConsumerWidget {
   const DetailPage(this.post, {Key? key}) : super(key: key);
 
   final Post post;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('詳細'),
@@ -25,9 +28,14 @@ class DetailPage extends StatelessWidget {
             _buildHeader(),
             _buildBody(),
             _buildFooter(context),
-            CommentList(
-              posts: [post],
-            ),
+            StreamBuilder<List<Post>>(
+                stream: ref.watch(detailVm).commentsStream(post.id ?? ''),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const CupertinoActivityIndicator();
+                  }
+                  return CommentList(posts: snapshot.data);
+                }),
           ],
         ),
       ),
