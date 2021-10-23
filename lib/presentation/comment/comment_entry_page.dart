@@ -1,21 +1,27 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:swing_share/domain/model/post.dart';
+import 'package:swing_share/infra/repository/repository_impl.dart';
 import 'package:swing_share/presentation/comment/comment_list.dart';
+import 'package:swing_share/presentation/comment/comment_list_content.dart';
 import 'package:swing_share/util/color.dart';
 import 'package:swing_share/util/string.dart';
 
-class CommentEntryPage extends StatefulWidget {
-  const CommentEntryPage(this.post, {Key? key}) : super(key: key);
+class CommentEntryPage extends ConsumerStatefulWidget {
+  const CommentEntryPage(
+    this.post, {
+    Key? key,
+    this.comments = const [],
+  }) : super(key: key);
 
   final Post post;
+  final List<Post>? comments;
 
   @override
   _CommentEntryPageState createState() => _CommentEntryPageState();
 }
 
-class _CommentEntryPageState extends State<CommentEntryPage> {
+class _CommentEntryPageState extends ConsumerState<CommentEntryPage> {
   late TextEditingController _ctrl;
   String get _body => trimLastBlankLine(_ctrl.text);
 
@@ -36,7 +42,7 @@ class _CommentEntryPageState extends State<CommentEntryPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: AppColor.dark!.withOpacity(0.5),
+        backgroundColor: AppColor.dark!.withOpacity(0.8),
         elevation: 1,
         toolbarHeight: 44,
         actions: [
@@ -51,6 +57,7 @@ class _CommentEntryPageState extends State<CommentEntryPage> {
               child: GestureDetector(
                 onTap: () async {
                   print('comment body: $_body');
+                  await ref.read(repo).setComment(_body, widget.post.id ?? '');
                   Navigator.pop(context);
                 },
                 child: const Center(child: Text('投稿')),
@@ -61,28 +68,29 @@ class _CommentEntryPageState extends State<CommentEntryPage> {
       ),
       body: SingleChildScrollView(
         reverse: true,
-        child: Column(
-          children: [
-            if (Platform.isIOS) const SizedBox(height: 44),
-            const SizedBox(height: 44),
-            CommentList(posts: [widget.post]), // todo change
-            TextField(
-              style: const TextStyle(fontSize: 16.4),
-              autofocus: true,
-              cursorColor: Colors.blueGrey,
-              keyboardType: TextInputType.multiline,
-              textInputAction: TextInputAction.newline,
-              maxLines: 20,
-              controller: _ctrl,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.fromLTRB(12, 16, 12, 16),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
+        child: SafeArea(
+          child: Column(
+            children: [
+              CommentListContent(widget.post),
+              CommentList(posts: widget.comments),
+              TextField(
+                style: const TextStyle(fontSize: 16.4),
+                autofocus: true,
+                cursorColor: Colors.blueGrey,
+                keyboardType: TextInputType.multiline,
+                textInputAction: TextInputAction.newline,
+                maxLines: 20,
+                controller: _ctrl,
+                decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.fromLTRB(12, 16, 12, 16),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                  ),
                 ),
+                onChanged: (_) => setState(() {}),
               ),
-              onChanged: (_) => setState(() {}),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

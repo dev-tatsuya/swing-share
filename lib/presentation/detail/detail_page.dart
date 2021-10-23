@@ -15,29 +15,29 @@ class DetailPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: const Text('詳細'),
         toolbarHeight: 44,
-        backgroundColor: AppColor.dark,
+        backgroundColor: AppColor.dark!.withOpacity(0.9),
         elevation: 1,
       ),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(),
-            _buildBody(),
-            _buildFooter(context),
-            StreamBuilder<List<Post>>(
-                stream: ref.watch(detailVm).commentsStream(post.id ?? ''),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const CupertinoActivityIndicator();
-                  }
-                  return CommentList(posts: snapshot.data);
-                }),
-          ],
-        ),
+        child: StreamBuilder<List<Post>>(
+            stream: ref.watch(detailVm).commentsStream(post.id ?? ''),
+            builder: (context, snapshot) {
+              return SafeArea(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildHeader(),
+                    _buildBody(),
+                    _buildFooter(context, snapshot.data),
+                    if (snapshot.hasData) CommentList(posts: snapshot.data),
+                  ],
+                ),
+              );
+            }),
       ),
     );
   }
@@ -101,7 +101,7 @@ class DetailPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildFooter(BuildContext context) {
+  Widget _buildFooter(BuildContext context, List<Post>? comments) {
     return Column(
       children: [
         Padding(
@@ -111,7 +111,7 @@ class DetailPage extends ConsumerWidget {
               Navigator.of(context, rootNavigator: true).push(
                 MaterialPageRoute(
                   fullscreenDialog: true,
-                  builder: (_) => CommentEntryPage(post),
+                  builder: (_) => CommentEntryPage(post, comments: comments),
                 ),
               );
             },

@@ -14,7 +14,7 @@ abstract class Repository {
   Stream<List<domain.Post>> allPostsStream();
 
   /// comment
-  Future<void> setComment(String body);
+  Future<void> setComment(String body, String postId);
   Future<void> deleteComment();
   Stream<List<Post>> postCommentsStream(String postId);
   Stream<List<Post>> userCommentStream();

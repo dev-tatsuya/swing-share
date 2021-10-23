@@ -18,9 +18,10 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         elevation: 1,
-        backgroundColor: AppColor.dark,
+        backgroundColor: AppColor.dark!.withOpacity(0.9),
         title: GestureDetector(
           onTap: () => Navigator.push(
             context,
@@ -34,10 +35,11 @@ class HomePage extends ConsumerWidget {
         toolbarHeight: 44,
       ),
       body: StreamBuilder<List<Post>>(
-          stream: ref.watch(repo).allPostsStream(),
-          builder: (context, snapshot) {
-            return Timeline(posts: snapshot.data);
-          }),
+        stream: ref.watch(repo).allPostsStream(),
+        builder: (context, snapshot) {
+          return Timeline(posts: snapshot.data);
+        },
+      ),
     );
   }
 }

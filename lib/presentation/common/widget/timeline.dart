@@ -18,22 +18,24 @@ class Timeline extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          ...?posts?.map(
-            (e) => GestureDetector(
-              onTap: () {
-                if (isHome) {
-                  ref.read(homeVm).pushDetailPage(e);
-                }
-              },
-              child: Container(
-                color: Colors.transparent,
-                child: TimelineContent(e),
+      child: SafeArea(
+        child: Column(
+          children: [
+            ...?posts?.map(
+              (e) => GestureDetector(
+                onTap: () {
+                  if (isHome) {
+                    ref.read(homeVm).pushDetailPage(e);
+                  }
+                },
+                child: Container(
+                  color: Colors.transparent,
+                  child: TimelineContent(e),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

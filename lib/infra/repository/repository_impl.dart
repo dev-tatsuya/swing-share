@@ -98,9 +98,24 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<void> setComment(String body) {
-    // TODO: implement setComment
-    throw UnimplementedError();
+  Future<void> setComment(String body, String postId) async {
+    final profile = await _service.documentFuture<Profile>(
+      path: APIPath.user(uid!),
+      builder: (data, documentId) => Profile.fromMap(data, documentId),
+    );
+
+    _service.setData(
+      path: APIPath.comment(uid!, postId, documentIdFromCurrentDate),
+      data: <String, dynamic>{
+        'author': <String, dynamic>{
+          'name': profile.name,
+          'ref': 'users/$uid',
+          'thumbnailPath': profile.thumbnailPath,
+        },
+        'body': body,
+        'createdAt': DateTime.now(),
+      },
+    );
   }
 
   @override
@@ -114,6 +129,7 @@ class RepositoryImpl implements Repository {
     return _service.collectionStream<Post>(
       path: APIPath.comments(uid!, postId),
       builder: (data, documentId) => Post.fromMap(data, documentId),
+      sort: (lhs, rhs) => lhs.createdAt!.compareTo(rhs.createdAt!),
     );
   }
 
