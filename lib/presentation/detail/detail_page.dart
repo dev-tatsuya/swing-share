@@ -24,7 +24,9 @@ class DetailPage extends ConsumerWidget {
       ),
       body: SingleChildScrollView(
         child: StreamBuilder<List<Post>>(
-            stream: ref.watch(detailVm).commentsStream(post.id ?? ''),
+            stream: ref
+                .watch(detailVm)
+                .commentsStream(post.profile.id ?? '', post.id ?? ''),
             builder: (context, snapshot) {
               return SafeArea(
                 child: Column(

@@ -56,6 +56,7 @@ class Post {
     return domain.Post(
       id: id,
       profile: Profile(
+        id: author?['ref'].split('/')[1] ?? '',
         name: author?['name'] ?? defaultName,
         thumbnailPath: author?['thumbnailPath'] ?? defaultPhotoUrl,
       ),

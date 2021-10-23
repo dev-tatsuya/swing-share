@@ -40,12 +40,14 @@ class RepositoryImpl implements Repository {
       builder: (data, documentId) {
         final model = Post.fromMap(data, documentId);
         final author = model.author;
+        final id = author?['ref'].split('/')[1] ?? '';
         final name = author?['name'] ?? defaultName;
         final thumbnailPath = author?['thumbnailPath'] ?? defaultPhotoUrl;
 
         return domain.Post(
           id: model.id,
-          profile: domain.Profile(name: name, thumbnailPath: thumbnailPath),
+          profile:
+              domain.Profile(id: id, name: name, thumbnailPath: thumbnailPath),
           body: model.body ?? '',
           createdAt: model.createdAt,
         );
@@ -125,9 +127,9 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Stream<List<Post>> postCommentsStream(String postId) {
+  Stream<List<Post>> postCommentsStream(String profileId, String postId) {
     return _service.collectionStream<Post>(
-      path: APIPath.comments(uid!, postId),
+      path: APIPath.comments(profileId, postId),
       builder: (data, documentId) => Post.fromMap(data, documentId),
       sort: (lhs, rhs) => lhs.createdAt!.compareTo(rhs.createdAt!),
     );

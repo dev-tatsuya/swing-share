@@ -16,8 +16,12 @@ final _privateConstructorUsedError = UnsupportedError(
 class _$ProfileTearOff {
   const _$ProfileTearOff();
 
-  _Profile call({required String name, required String thumbnailPath}) {
+  _Profile call(
+      {required String? id,
+      required String name,
+      required String thumbnailPath}) {
     return _Profile(
+      id: id,
       name: name,
       thumbnailPath: thumbnailPath,
     );
@@ -29,6 +33,7 @@ const $Profile = _$ProfileTearOff();
 
 /// @nodoc
 mixin _$Profile {
+  String? get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get thumbnailPath => throw _privateConstructorUsedError;
 
@@ -40,7 +45,7 @@ mixin _$Profile {
 abstract class $ProfileCopyWith<$Res> {
   factory $ProfileCopyWith(Profile value, $Res Function(Profile) then) =
       _$ProfileCopyWithImpl<$Res>;
-  $Res call({String name, String thumbnailPath});
+  $Res call({String? id, String name, String thumbnailPath});
 }
 
 /// @nodoc
@@ -53,10 +58,15 @@ class _$ProfileCopyWithImpl<$Res> implements $ProfileCopyWith<$Res> {
 
   @override
   $Res call({
+    Object? id = freezed,
     Object? name = freezed,
     Object? thumbnailPath = freezed,
   }) {
     return _then(_value.copyWith(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
       name: name == freezed
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -74,7 +84,7 @@ abstract class _$ProfileCopyWith<$Res> implements $ProfileCopyWith<$Res> {
   factory _$ProfileCopyWith(_Profile value, $Res Function(_Profile) then) =
       __$ProfileCopyWithImpl<$Res>;
   @override
-  $Res call({String name, String thumbnailPath});
+  $Res call({String? id, String name, String thumbnailPath});
 }
 
 /// @nodoc
@@ -88,10 +98,15 @@ class __$ProfileCopyWithImpl<$Res> extends _$ProfileCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object? id = freezed,
     Object? name = freezed,
     Object? thumbnailPath = freezed,
   }) {
     return _then(_Profile(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
       name: name == freezed
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -107,8 +122,11 @@ class __$ProfileCopyWithImpl<$Res> extends _$ProfileCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_Profile implements _Profile {
-  const _$_Profile({required this.name, required this.thumbnailPath});
+  const _$_Profile(
+      {required this.id, required this.name, required this.thumbnailPath});
 
+  @override
+  final String? id;
   @override
   final String name;
   @override
@@ -116,13 +134,15 @@ class _$_Profile implements _Profile {
 
   @override
   String toString() {
-    return 'Profile(name: $name, thumbnailPath: $thumbnailPath)';
+    return 'Profile(id: $id, name: $name, thumbnailPath: $thumbnailPath)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _Profile &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.name, name) ||
                 const DeepCollectionEquality().equals(other.name, name)) &&
             (identical(other.thumbnailPath, thumbnailPath) ||
@@ -133,6 +153,7 @@ class _$_Profile implements _Profile {
   @override
   int get hashCode =>
       runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(id) ^
       const DeepCollectionEquality().hash(name) ^
       const DeepCollectionEquality().hash(thumbnailPath);
 
@@ -144,8 +165,12 @@ class _$_Profile implements _Profile {
 
 abstract class _Profile implements Profile {
   const factory _Profile(
-      {required String name, required String thumbnailPath}) = _$_Profile;
+      {required String? id,
+      required String name,
+      required String thumbnailPath}) = _$_Profile;
 
+  @override
+  String? get id => throw _privateConstructorUsedError;
   @override
   String get name => throw _privateConstructorUsedError;
   @override

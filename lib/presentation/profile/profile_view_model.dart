@@ -22,6 +22,7 @@ class ProfileViewModel {
       _repo.userPostsStream(),
       (data_model.Profile profile, List<data_model.Post> posts) => UserPosts(
         profile: Profile(
+          id: profile.id,
           name: profile.name ?? defaultName,
           thumbnailPath: profile.thumbnailPath ?? defaultPhotoUrl,
         ),
@@ -29,6 +30,7 @@ class ProfileViewModel {
             .map((e) => Post(
                   id: e.id,
                   profile: Profile(
+                    id: e.author?['ref'].split('/')[1] ?? '',
                     name: e.author?['name'] ?? defaultName,
                     thumbnailPath:
                         e.author?['thumbnailPath'] ?? defaultPhotoUrl,

@@ -8,8 +8,8 @@ class DetailViewModel {
   DetailViewModel(this._read);
   final Reader _read;
 
-  Stream<List<Post>> commentsStream(String postId) {
-    return _read(repo).postCommentsStream(postId).map(
+  Stream<List<Post>> commentsStream(String profileId, String postId) {
+    return _read(repo).postCommentsStream(profileId, postId).map(
           (event) => event.map((e) => e.toEntity()).toList(),
         );
   }
