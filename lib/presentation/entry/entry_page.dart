@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:swing_share/presentation/common/widget/send_button.dart';
 import 'package:swing_share/presentation/entry/entry_view_model.dart';
+import 'package:swing_share/util/color.dart';
 import 'package:swing_share/util/string.dart';
 
 class EntryPage extends ConsumerStatefulWidget {
@@ -30,32 +32,19 @@ class _EntryPageState extends ConsumerState<EntryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColor.dark,
+        elevation: 1,
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: Wrap(
-              children: [
-                Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.blueGrey,
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                  ),
-                  child: Visibility(
-                    visible: _body.isNotEmpty,
-                    child: GestureDetector(
-                      onTap: () async {
-                        await ref.read(entryVm).post(_body);
-                        Navigator.pop(context);
-                      },
-                      child: const Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        child: Text('投稿'),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+            child: Center(
+              child: SendButton(
+                disabled: _body.isEmpty,
+                onTap: () async {
+                  await ref.read(entryVm).post(_body);
+                  Navigator.pop(context);
+                },
+              ),
             ),
           ),
         ],

@@ -4,6 +4,7 @@ import 'package:swing_share/domain/model/post.dart';
 import 'package:swing_share/infra/repository/repository_impl.dart';
 import 'package:swing_share/presentation/comment/comment_list.dart';
 import 'package:swing_share/presentation/comment/comment_list_content.dart';
+import 'package:swing_share/presentation/common/widget/send_button.dart';
 import 'package:swing_share/util/color.dart';
 import 'package:swing_share/util/string.dart';
 
@@ -47,23 +48,17 @@ class _CommentEntryPageState extends ConsumerState<CommentEntryPage> {
         toolbarHeight: 44,
         actions: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(0, 4, 8, 4),
-            child: Container(
-              width: 60,
-              decoration: const BoxDecoration(
-                color: Colors.blueGrey,
-                borderRadius: BorderRadius.all(Radius.circular(30)),
-              ),
-              child: GestureDetector(
+            padding: const EdgeInsets.only(right: 8),
+            child: Center(
+              child: SendButton(
+                disabled: _body.isEmpty,
                 onTap: () async {
-                  print('comment body: $_body');
                   await ref.read(repo).setComment(_body, widget.post.id ?? '');
                   Navigator.pop(context);
                 },
-                child: const Center(child: Text('投稿')),
               ),
             ),
-          )
+          ),
         ],
       ),
       body: SingleChildScrollView(
