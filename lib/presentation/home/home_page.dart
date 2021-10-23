@@ -5,6 +5,7 @@ import 'package:swing_share/domain/model/post.dart';
 import 'package:swing_share/infra/repository/repository_impl.dart';
 import 'package:swing_share/presentation/common/widget/timeline.dart';
 import 'package:swing_share/presentation/entry/entry_page.dart';
+import 'package:swing_share/util/color.dart';
 
 class HomeState {
   HomeState(this.posts);
@@ -18,6 +19,8 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 1,
+        backgroundColor: AppColor.dark,
         title: GestureDetector(
           onTap: () => Navigator.push(
             context,
