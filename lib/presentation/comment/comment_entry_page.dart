@@ -53,7 +53,11 @@ class _CommentEntryPageState extends ConsumerState<CommentEntryPage> {
               child: SendButton(
                 disabled: _body.isEmpty,
                 onTap: () async {
-                  await ref.read(repo).setComment(_body, widget.post.id ?? '');
+                  await ref.read(repo).setComment(
+                        _body,
+                        widget.post.profile.id ?? '',
+                        widget.post.id ?? '',
+                      );
                   Navigator.pop(context);
                 },
               ),

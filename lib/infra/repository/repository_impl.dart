@@ -100,14 +100,15 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<void> setComment(String body, String postId) async {
+  Future<void> setComment(
+      String body, String postedProfileId, String postId) async {
     final profile = await _service.documentFuture<Profile>(
       path: APIPath.user(uid!),
       builder: (data, documentId) => Profile.fromMap(data, documentId),
     );
 
     _service.setData(
-      path: APIPath.comment(uid!, postId, documentIdFromCurrentDate),
+      path: APIPath.comment(postedProfileId, postId, documentIdFromCurrentDate),
       data: <String, dynamic>{
         'author': <String, dynamic>{
           'name': profile.name,
