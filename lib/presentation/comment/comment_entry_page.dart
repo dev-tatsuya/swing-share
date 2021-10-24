@@ -72,8 +72,9 @@ class _CommentEntryPageState extends ConsumerState<CommentEntryPage> {
         child: SafeArea(
           child: Column(
             children: [
-              TimelineContent(widget.post),
-              CommentList(widget.post, comments: widget.comments),
+              TimelineContent(widget.post, isWriting: true),
+              CommentList(widget.post,
+                  comments: widget.comments, isWriting: true),
               TextField(
                 style: const TextStyle(fontSize: 16.4),
                 autofocus: true,

@@ -5,11 +5,16 @@ import 'package:swing_share/presentation/common/widget/custom_popup_menu.dart';
 import 'package:swing_share/util/color.dart';
 
 class CommentContentBody extends StatelessWidget {
-  const CommentContentBody(this.post, this.comment, {Key? key})
-      : super(key: key);
+  const CommentContentBody(
+    this.post,
+    this.comment, {
+    Key? key,
+    this.isWriting = false,
+  }) : super(key: key);
 
   final Post post;
   final Comment comment;
+  final bool isWriting;
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +43,8 @@ class CommentContentBody extends StatelessWidget {
                         style:
                             const TextStyle(fontSize: 14, color: AppColor.gray),
                       ),
-                      const SizedBox(width: 4),
-                      CustomPopupMenu(post, comment: comment),
+                      if (!isWriting) const SizedBox(width: 4),
+                      if (!isWriting) CustomPopupMenu(post, comment: comment),
                     ],
                   ),
                 ],

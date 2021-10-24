@@ -4,9 +4,14 @@ import 'package:swing_share/presentation/common/widget/timeline_content_body.dar
 import 'package:swing_share/util/color.dart';
 
 class TimelineContent extends StatelessWidget {
-  const TimelineContent(this.post, {Key? key}) : super(key: key);
+  const TimelineContent(
+    this.post, {
+    Key? key,
+    this.isWriting = false,
+  }) : super(key: key);
 
   final Post post;
+  final bool isWriting;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +58,7 @@ class TimelineContent extends StatelessWidget {
                 ],
               ),
             ),
-            TimelineContentBody(post),
+            TimelineContentBody(post, isWriting: isWriting),
           ],
         ),
         const Divider(height: 0),

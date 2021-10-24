@@ -10,10 +10,12 @@ class CommentList extends ConsumerWidget {
     this.post, {
     Key? key,
     this.comments = const [],
+    this.isWriting = false,
   }) : super(key: key);
 
   final Post post;
   final List<Comment>? comments;
+  final bool isWriting;
 
   @override
   Widget build(BuildContext context, ref) {
@@ -23,7 +25,7 @@ class CommentList extends ConsumerWidget {
           ...?comments?.map(
             (e) => Container(
               color: Colors.transparent,
-              child: CommentListContent(post, e),
+              child: CommentListContent(post, e, isWriting: isWriting),
             ),
           ),
         ],

@@ -4,11 +4,16 @@ import 'package:swing_share/domain/model/post.dart';
 import 'package:swing_share/presentation/comment/comment_content_body.dart';
 
 class CommentListContent extends StatelessWidget {
-  const CommentListContent(this.post, this.comment, {Key? key})
-      : super(key: key);
+  const CommentListContent(
+    this.post,
+    this.comment, {
+    Key? key,
+    this.isWriting = false,
+  }) : super(key: key);
 
   final Post post;
   final Comment comment;
+  final bool isWriting;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +39,7 @@ class CommentListContent extends StatelessWidget {
             ],
           ),
         ),
-        CommentContentBody(post, comment),
+        CommentContentBody(post, comment, isWriting: isWriting),
       ],
     );
   }

@@ -14,11 +14,12 @@ class CustomPopupMenu extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final auth = ref.watch(authStateChangesProvider);
-    late bool isMine = false;
+    late bool canDelete = false;
     if (comment == null) {
-      isMine = auth.asData?.value?.uid == post.profile.id;
+      canDelete = auth.asData?.value?.uid == post.profile.id;
     } else {
-      isMine = auth.asData?.value?.uid == comment!.profile.id;
+      canDelete = auth.asData?.value?.uid == comment!.profile.id ||
+          auth.asData?.value?.uid == post.profile.id;
     }
 
     return SizedBox(
@@ -30,7 +31,7 @@ class CustomPopupMenu extends ConsumerWidget {
             borderRadius: BorderRadius.all(Radius.circular(10))),
         padding: const EdgeInsets.all(0),
         itemBuilder: (context) => [
-          if (isMine)
+          if (canDelete)
             PopupMenuItem(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,7 +53,7 @@ class CustomPopupMenu extends ConsumerWidget {
                 }
               },
             ),
-          if (!isMine)
+          if (!canDelete)
             PopupMenuItem(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
