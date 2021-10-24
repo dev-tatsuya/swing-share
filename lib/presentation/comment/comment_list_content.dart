@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:swing_share/domain/model/comment.dart';
 import 'package:swing_share/domain/model/post.dart';
-import 'package:swing_share/presentation/common/widget/timeline_content_body.dart';
+import 'package:swing_share/presentation/comment/comment_content_body.dart';
 
 class CommentListContent extends StatelessWidget {
-  const CommentListContent(this.post, {Key? key}) : super(key: key);
+  const CommentListContent(this.post, this.comment, {Key? key})
+      : super(key: key);
 
   final Post post;
+  final Comment comment;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +24,7 @@ class CommentListContent extends StatelessWidget {
                 height: 48,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(post.profile.thumbnailPath),
+                    image: NetworkImage(comment.profile.thumbnailPath),
                     fit: BoxFit.cover,
                   ),
                   borderRadius: const BorderRadius.all(Radius.circular(24)),
@@ -31,7 +34,7 @@ class CommentListContent extends StatelessWidget {
             ],
           ),
         ),
-        TimelineContentBody(post),
+        CommentContentBody(post, comment),
       ],
     );
   }

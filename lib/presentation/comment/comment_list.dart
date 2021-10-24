@@ -1,26 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:swing_share/domain/model/comment.dart';
 import 'package:swing_share/domain/model/post.dart';
 import 'package:swing_share/presentation/comment/comment_list_content.dart';
 
 class CommentList extends ConsumerWidget {
-  const CommentList({
+  const CommentList(
+    this.post, {
     Key? key,
-    this.posts = const [],
+    this.comments = const [],
   }) : super(key: key);
 
-  final List<Post>? posts;
+  final Post post;
+  final List<Comment>? comments;
 
   @override
   Widget build(BuildContext context, ref) {
     return SingleChildScrollView(
       child: Column(
         children: [
-          ...?posts?.map(
+          ...?comments?.map(
             (e) => Container(
               color: Colors.transparent,
-              child: CommentListContent(e),
+              child: CommentListContent(post, e),
             ),
           ),
         ],

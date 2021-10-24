@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:swing_share/domain/model/comment.dart';
 import 'package:swing_share/domain/model/post.dart';
 import 'package:swing_share/presentation/common/widget/custom_popup_menu.dart';
 import 'package:swing_share/util/color.dart';
 
-class TimelineContentBody extends StatelessWidget {
-  const TimelineContentBody(this.post, {Key? key}) : super(key: key);
+class CommentContentBody extends StatelessWidget {
+  const CommentContentBody(this.post, this.comment, {Key? key})
+      : super(key: key);
 
   final Post post;
+  final Comment comment;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +26,7 @@ class TimelineContentBody extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    post.profile.name,
+                    comment.profile.name,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
@@ -31,12 +34,12 @@ class TimelineContentBody extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        post.createdAt.toString(),
+                        comment.createdAt.toString(),
                         style:
                             const TextStyle(fontSize: 14, color: AppColor.gray),
                       ),
                       const SizedBox(width: 4),
-                      CustomPopupMenu(post),
+                      CustomPopupMenu(post, comment: comment),
                     ],
                   ),
                 ],
@@ -44,7 +47,7 @@ class TimelineContentBody extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(right: 12),
-              child: Text(post.body.replaceAll('\\n', '\n')),
+              child: Text(comment.body.replaceAll('\\n', '\n')),
             ),
           ],
         ),

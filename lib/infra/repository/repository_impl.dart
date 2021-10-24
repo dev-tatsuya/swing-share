@@ -1,7 +1,9 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:swing_share/domain/model/comment.dart' as domain;
 import 'package:swing_share/domain/model/post.dart' as domain;
 import 'package:swing_share/domain/model/profile.dart' as domain;
 import 'package:swing_share/domain/repository/repository.dart';
+import 'package:swing_share/infra/model/comment.dart';
 import 'package:swing_share/infra/model/post.dart';
 import 'package:swing_share/infra/model/profile.dart';
 import 'package:swing_share/infra/service/auth_service_impl.dart';
@@ -28,9 +30,8 @@ class RepositoryImpl implements Repository {
   final _service = FirestoreService.instance;
 
   @override
-  Future<void> deletePost() {
-    // TODO: implement deletePost
-    throw UnimplementedError();
+  Future<void> deletePost(String postId) async {
+    await _service.deleteData(path: APIPath.post(uid!, postId));
   }
 
   @override
@@ -68,7 +69,8 @@ class RepositoryImpl implements Repository {
 
   @override
   Future<void> setProfile(Profile profile) async {
-    _service.setData(path: APIPath.user(profile.id!), data: profile.toMap());
+    await _service.setData(
+        path: APIPath.user(profile.id!), data: profile.toMap());
   }
 
   @override
@@ -78,7 +80,7 @@ class RepositoryImpl implements Repository {
       builder: (data, documentId) => Profile.fromMap(data, documentId),
     );
 
-    _service.setData(
+    await _service.setData(
       path: APIPath.post(uid!, documentIdFromCurrentDate),
       data: <String, dynamic>{
         'author': <String, dynamic>{
@@ -108,7 +110,7 @@ class RepositoryImpl implements Repository {
       builder: (data, documentId) => Profile.fromMap(data, documentId),
     );
 
-    _service.setData(
+    await _service.setData(
       path: APIPath.comment(postedProfileId, postId, documentIdFromCurrentDate),
       data: <String, dynamic>{
         'author': <String, dynamic>{
@@ -121,34 +123,38 @@ class RepositoryImpl implements Repository {
       },
     );
 
-    _updateCommentCount(postedProfileId, postId, count);
+    await _updateCommentCount(postedProfileId, postId, count);
   }
 
   Future<void> _updateCommentCount(
       String postedProfileId, String postId, int count) async {
-    _service.updateData(
+    await _service.updateData(
       path: APIPath.post(postedProfileId, postId),
       data: <String, dynamic>{'commentCount': count},
     );
   }
 
   @override
-  Future<void> deleteComment() {
-    // TODO: implement deleteComment
-    throw UnimplementedError();
+  Future<void> deleteComment(String postedProfileId, String postId,
+      String commentId, int count) async {
+    await _service.deleteData(
+        path: APIPath.comment(postedProfileId, postId, commentId));
+    await _updateCommentCount(postedProfileId, postId, count);
   }
 
   @override
-  Stream<List<Post>> postCommentsStream(String profileId, String postId) {
-    return _service.collectionStream<Post>(
+  Stream<List<domain.Comment>> postCommentsStream(
+      String profileId, String postId) {
+    return _service.collectionStream<domain.Comment>(
       path: APIPath.comments(profileId, postId),
-      builder: (data, documentId) => Post.fromMap(data, documentId),
+      builder: (data, documentId) =>
+          Comment.fromMap(data, documentId).toEntity(),
       sort: (lhs, rhs) => lhs.createdAt!.compareTo(rhs.createdAt!),
     );
   }
 
   @override
-  Stream<List<Post>> userCommentStream() {
+  Stream<List<domain.Comment>> userCommentStream() {
     // TODO: implement userCommentStream
     throw UnimplementedError();
   }

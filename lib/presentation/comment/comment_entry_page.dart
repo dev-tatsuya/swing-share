@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:swing_share/domain/model/comment.dart';
 import 'package:swing_share/domain/model/post.dart';
 import 'package:swing_share/infra/repository/repository_impl.dart';
 import 'package:swing_share/presentation/comment/comment_list.dart';
-import 'package:swing_share/presentation/comment/comment_list_content.dart';
 import 'package:swing_share/presentation/common/widget/send_button.dart';
+import 'package:swing_share/presentation/common/widget/timeline_content.dart';
 import 'package:swing_share/util/color.dart';
 import 'package:swing_share/util/string.dart';
 
@@ -16,7 +17,7 @@ class CommentEntryPage extends ConsumerStatefulWidget {
   }) : super(key: key);
 
   final Post post;
-  final List<Post>? comments;
+  final List<Comment>? comments;
 
   @override
   _CommentEntryPageState createState() => _CommentEntryPageState();
@@ -71,8 +72,8 @@ class _CommentEntryPageState extends ConsumerState<CommentEntryPage> {
         child: SafeArea(
           child: Column(
             children: [
-              CommentListContent(widget.post),
-              CommentList(posts: widget.comments),
+              TimelineContent(widget.post),
+              CommentList(widget.post, comments: widget.comments),
               TextField(
                 style: const TextStyle(fontSize: 16.4),
                 autofocus: true,
