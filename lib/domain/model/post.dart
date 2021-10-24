@@ -10,5 +10,6 @@ abstract class Post with _$Post {
     required Profile profile,
     required String body,
     required DateTime? createdAt,
+    required int commentCount,
   }) = _Post;
 }

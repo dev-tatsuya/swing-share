@@ -6,17 +6,17 @@ import 'package:swing_share/presentation/login/login_view_model.dart';
 class Post {
   Post({
     this.id,
-    this.authorRef,
     this.body,
     this.createdAt,
     this.author,
+    this.commentCount = 0,
   });
 
   final String? id;
-  final String? authorRef;
   final String? body;
   final DateTime? createdAt;
   final Map<String, dynamic>? author;
+  final int commentCount;
 
   factory Post.fromMap(
     Map<String, dynamic>? data,
@@ -33,13 +33,14 @@ class Post {
     }
 
     final map = data['author'] as Map<String, dynamic>?;
+    final commentCount = data['commentCount'] as int?;
 
     return Post(
       id: documentId,
-      // authorRef: authorRef,
       body: body,
       createdAt: createdAt,
       author: map,
+      commentCount: commentCount ?? 0,
     );
   }
 
@@ -47,7 +48,6 @@ class Post {
         'author': <String, dynamic>{
           'name': '',
         },
-        'authorRef': authorRef,
         'body': body,
         'createdAt': createdAt,
       };
@@ -62,6 +62,7 @@ class Post {
       ),
       body: body ?? '',
       createdAt: createdAt,
+      commentCount: commentCount,
     );
   }
 }

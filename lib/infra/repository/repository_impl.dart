@@ -50,6 +50,7 @@ class RepositoryImpl implements Repository {
               domain.Profile(id: id, name: name, thumbnailPath: thumbnailPath),
           body: model.body ?? '',
           createdAt: model.createdAt,
+          commentCount: model.commentCount,
         );
       },
       sort: (lhs, rhs) => rhs.createdAt!.compareTo(lhs.createdAt!),

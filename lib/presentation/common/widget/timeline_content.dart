@@ -31,22 +31,25 @@ class TimelineContent extends StatelessWidget {
                       borderRadius: const BorderRadius.all(Radius.circular(24)),
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const [
-                      Icon(
-                        Icons.reply,
-                        color: AppColor.gray,
-                        size: 20,
+                  if (post.commentCount != 0)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.reply,
+                            color: AppColor.gray,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 2),
+                          Text(
+                            post.commentCount.toString(),
+                            style: const TextStyle(color: AppColor.gray),
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 2),
-                      Text(
-                        '99+',
-                        style: TextStyle(color: AppColor.gray),
-                      ),
-                    ],
-                  )
+                    )
                 ],
               ),
             ),

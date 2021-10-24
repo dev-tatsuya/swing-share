@@ -37,6 +37,7 @@ class ProfileViewModel {
                   ),
                   body: e.body ?? '',
                   createdAt: e.createdAt,
+                  commentCount: e.commentCount,
                 ))
             .toList(),
       ),

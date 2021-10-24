@@ -20,12 +20,14 @@ class _$PostTearOff {
       {required String? id,
       required Profile profile,
       required String body,
-      required DateTime? createdAt}) {
+      required DateTime? createdAt,
+      required int commentCount}) {
     return _Post(
       id: id,
       profile: profile,
       body: body,
       createdAt: createdAt,
+      commentCount: commentCount,
     );
   }
 }
@@ -39,6 +41,7 @@ mixin _$Post {
   Profile get profile => throw _privateConstructorUsedError;
   String get body => throw _privateConstructorUsedError;
   DateTime? get createdAt => throw _privateConstructorUsedError;
+  int get commentCount => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $PostCopyWith<Post> get copyWith => throw _privateConstructorUsedError;
@@ -48,7 +51,12 @@ mixin _$Post {
 abstract class $PostCopyWith<$Res> {
   factory $PostCopyWith(Post value, $Res Function(Post) then) =
       _$PostCopyWithImpl<$Res>;
-  $Res call({String? id, Profile profile, String body, DateTime? createdAt});
+  $Res call(
+      {String? id,
+      Profile profile,
+      String body,
+      DateTime? createdAt,
+      int commentCount});
 
   $ProfileCopyWith<$Res> get profile;
 }
@@ -67,6 +75,7 @@ class _$PostCopyWithImpl<$Res> implements $PostCopyWith<$Res> {
     Object? profile = freezed,
     Object? body = freezed,
     Object? createdAt = freezed,
+    Object? commentCount = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed
@@ -85,6 +94,10 @@ class _$PostCopyWithImpl<$Res> implements $PostCopyWith<$Res> {
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      commentCount: commentCount == freezed
+          ? _value.commentCount
+          : commentCount // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 
@@ -101,7 +114,12 @@ abstract class _$PostCopyWith<$Res> implements $PostCopyWith<$Res> {
   factory _$PostCopyWith(_Post value, $Res Function(_Post) then) =
       __$PostCopyWithImpl<$Res>;
   @override
-  $Res call({String? id, Profile profile, String body, DateTime? createdAt});
+  $Res call(
+      {String? id,
+      Profile profile,
+      String body,
+      DateTime? createdAt,
+      int commentCount});
 
   @override
   $ProfileCopyWith<$Res> get profile;
@@ -122,6 +140,7 @@ class __$PostCopyWithImpl<$Res> extends _$PostCopyWithImpl<$Res>
     Object? profile = freezed,
     Object? body = freezed,
     Object? createdAt = freezed,
+    Object? commentCount = freezed,
   }) {
     return _then(_Post(
       id: id == freezed
@@ -140,6 +159,10 @@ class __$PostCopyWithImpl<$Res> extends _$PostCopyWithImpl<$Res>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      commentCount: commentCount == freezed
+          ? _value.commentCount
+          : commentCount // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -151,7 +174,8 @@ class _$_Post implements _Post {
       {required this.id,
       required this.profile,
       required this.body,
-      required this.createdAt});
+      required this.createdAt,
+      required this.commentCount});
 
   @override
   final String? id;
@@ -161,10 +185,12 @@ class _$_Post implements _Post {
   final String body;
   @override
   final DateTime? createdAt;
+  @override
+  final int commentCount;
 
   @override
   String toString() {
-    return 'Post(id: $id, profile: $profile, body: $body, createdAt: $createdAt)';
+    return 'Post(id: $id, profile: $profile, body: $body, createdAt: $createdAt, commentCount: $commentCount)';
   }
 
   @override
@@ -180,7 +206,10 @@ class _$_Post implements _Post {
                 const DeepCollectionEquality().equals(other.body, body)) &&
             (identical(other.createdAt, createdAt) ||
                 const DeepCollectionEquality()
-                    .equals(other.createdAt, createdAt)));
+                    .equals(other.createdAt, createdAt)) &&
+            (identical(other.commentCount, commentCount) ||
+                const DeepCollectionEquality()
+                    .equals(other.commentCount, commentCount)));
   }
 
   @override
@@ -189,7 +218,8 @@ class _$_Post implements _Post {
       const DeepCollectionEquality().hash(id) ^
       const DeepCollectionEquality().hash(profile) ^
       const DeepCollectionEquality().hash(body) ^
-      const DeepCollectionEquality().hash(createdAt);
+      const DeepCollectionEquality().hash(createdAt) ^
+      const DeepCollectionEquality().hash(commentCount);
 
   @JsonKey(ignore: true)
   @override
@@ -202,7 +232,8 @@ abstract class _Post implements Post {
       {required String? id,
       required Profile profile,
       required String body,
-      required DateTime? createdAt}) = _$_Post;
+      required DateTime? createdAt,
+      required int commentCount}) = _$_Post;
 
   @override
   String? get id => throw _privateConstructorUsedError;
@@ -212,6 +243,8 @@ abstract class _Post implements Post {
   String get body => throw _privateConstructorUsedError;
   @override
   DateTime? get createdAt => throw _privateConstructorUsedError;
+  @override
+  int get commentCount => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$PostCopyWith<_Post> get copyWith => throw _privateConstructorUsedError;
