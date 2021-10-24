@@ -57,6 +57,7 @@ class _CommentEntryPageState extends ConsumerState<CommentEntryPage> {
                         _body,
                         widget.post.profile.id ?? '',
                         widget.post.id ?? '',
+                        widget.post.incrementedCount,
                       );
                   Navigator.pop(context);
                 },

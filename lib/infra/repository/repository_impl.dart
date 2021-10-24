@@ -102,7 +102,7 @@ class RepositoryImpl implements Repository {
 
   @override
   Future<void> setComment(
-      String body, String postedProfileId, String postId) async {
+      String body, String postedProfileId, String postId, int count) async {
     final profile = await _service.documentFuture<Profile>(
       path: APIPath.user(uid!),
       builder: (data, documentId) => Profile.fromMap(data, documentId),
@@ -119,6 +119,16 @@ class RepositoryImpl implements Repository {
         'body': body,
         'createdAt': DateTime.now(),
       },
+    );
+
+    _updateCommentCount(postedProfileId, postId, count);
+  }
+
+  Future<void> _updateCommentCount(
+      String postedProfileId, String postId, int count) async {
+    _service.updateData(
+      path: APIPath.post(postedProfileId, postId),
+      data: <String, dynamic>{'commentCount': count},
     );
   }
 

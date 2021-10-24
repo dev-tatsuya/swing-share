@@ -5,6 +5,7 @@ part 'post.freezed.dart';
 
 @freezed
 abstract class Post with _$Post {
+  const Post._();
   const factory Post({
     required String? id,
     required Profile profile,
@@ -12,4 +13,7 @@ abstract class Post with _$Post {
     required DateTime? createdAt,
     required int commentCount,
   }) = _Post;
+
+  int get incrementedCount => commentCount + 1;
+  int get decrementedCount => commentCount - 1;
 }

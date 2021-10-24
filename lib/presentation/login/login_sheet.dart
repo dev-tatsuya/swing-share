@@ -6,6 +6,18 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import 'login_view_model.dart';
 
+Future<void> showLoginSheet(BuildContext context) => showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16),
+        ),
+      ),
+      builder: (_) => const LoginSheet(),
+      useRootNavigator: true,
+    );
+
 class LoginSheet extends ConsumerWidget {
   const LoginSheet({Key? key}) : super(key: key);
 

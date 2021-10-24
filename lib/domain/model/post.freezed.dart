@@ -169,13 +169,14 @@ class __$PostCopyWithImpl<$Res> extends _$PostCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_Post implements _Post {
+class _$_Post extends _Post {
   const _$_Post(
       {required this.id,
       required this.profile,
       required this.body,
       required this.createdAt,
-      required this.commentCount});
+      required this.commentCount})
+      : super._();
 
   @override
   final String? id;
@@ -227,13 +228,14 @@ class _$_Post implements _Post {
       __$PostCopyWithImpl<_Post>(this, _$identity);
 }
 
-abstract class _Post implements Post {
+abstract class _Post extends Post {
   const factory _Post(
       {required String? id,
       required Profile profile,
       required String body,
       required DateTime? createdAt,
       required int commentCount}) = _$_Post;
+  const _Post._() : super._();
 
   @override
   String? get id => throw _privateConstructorUsedError;

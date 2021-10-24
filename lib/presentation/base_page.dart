@@ -57,16 +57,7 @@ class _BasePageState extends ConsumerState<BasePage> {
 
   void _onItemTapped(int index, {required bool isLogin}) {
     if ((index == 1 || index == 2) && !isLogin) {
-      showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(16),
-          ),
-        ),
-        builder: (_) => const LoginSheet(),
-      );
+      showLoginSheet(context);
       return;
     }
 
