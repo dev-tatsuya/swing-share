@@ -95,6 +95,16 @@ class DetailPage extends ConsumerWidget {
             post.body.replaceAll('\\n', '\n'),
             style: const TextStyle(fontSize: 16.4),
           ),
+          if (post.imagePath != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.network(
+                  post.imagePath!,
+                ),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.only(top: 16),
             child: Text(

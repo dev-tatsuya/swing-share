@@ -51,6 +51,16 @@ class TimelineContentBody extends StatelessWidget {
               padding: const EdgeInsets.only(right: 12),
               child: Text(post.body.replaceAll('\\n', '\n')),
             ),
+            if (post.imagePath != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8, right: 12),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image.network(
+                    post.imagePath!,
+                  ),
+                ),
+              ),
           ],
         ),
       ),

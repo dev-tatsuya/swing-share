@@ -1,13 +1,10 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:swing_share/domain/model/post.dart';
-import 'package:swing_share/domain/model/profile.dart';
 import 'package:swing_share/domain/model/user_posts.dart';
 import 'package:swing_share/domain/repository/repository.dart';
-import 'package:swing_share/infra/model/post.dart' as data_model;
-import 'package:swing_share/infra/model/profile.dart' as data_model;
+import 'package:swing_share/infra/model/post.dart' as model;
+import 'package:swing_share/infra/model/profile.dart' as model;
 import 'package:swing_share/infra/repository/repository_impl.dart';
-import 'package:swing_share/presentation/login/login_view_model.dart';
 
 final profileVm = Provider.autoDispose((ref) => ProfileViewModel(ref.read));
 
@@ -20,26 +17,9 @@ class ProfileViewModel {
     return Rx.combineLatest2(
       _repo.userStream(),
       _repo.userPostsStream(),
-      (data_model.Profile profile, List<data_model.Post> posts) => UserPosts(
-        profile: Profile(
-          id: profile.id,
-          name: profile.name ?? defaultName,
-          thumbnailPath: profile.thumbnailPath ?? defaultPhotoUrl,
-        ),
-        posts: posts
-            .map((e) => Post(
-                  id: e.id,
-                  profile: Profile(
-                    id: e.author?['ref'].split('/')[1] ?? '',
-                    name: e.author?['name'] ?? defaultName,
-                    thumbnailPath:
-                        e.author?['thumbnailPath'] ?? defaultPhotoUrl,
-                  ),
-                  body: e.body ?? '',
-                  createdAt: e.createdAt,
-                  commentCount: e.commentCount,
-                ))
-            .toList(),
+      (model.Profile profile, List<model.Post> posts) => UserPosts(
+        profile: profile.toEntity(),
+        posts: posts.map((e) => e.toEntity()).toList(),
       ),
     );
   }

@@ -1,3 +1,6 @@
+import 'package:swing_share/domain/model/profile.dart' as domain;
+import 'package:swing_share/presentation/login/login_view_model.dart';
+
 class Profile {
   Profile({
     this.id,
@@ -26,4 +29,12 @@ class Profile {
         'name': name,
         'thumbnailPath': thumbnailPath,
       };
+
+  domain.Profile toEntity() {
+    return domain.Profile(
+      id: id,
+      name: name ?? defaultName,
+      thumbnailPath: thumbnailPath ?? defaultPhotoUrl,
+    );
+  }
 }
