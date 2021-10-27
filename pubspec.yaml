@@ -45,9 +45,12 @@ dependencies:
   freezed_annotation: ^0.14.2
   google_sign_in: ^5.0.5
   hooks_riverpod: 1.0.0-dev.11
+  image_picker: ^0.8.4+3
   intl: ^0.17.0
   json_annotation: ^4.0.1
   logger: ^1.0.0
+  path: ^1.8.0
+  path_provider: ^2.0.5
   rxdart: ^0.27.1
   sign_in_with_apple: ^3.0.0
   visibility_detector: ^0.2.2

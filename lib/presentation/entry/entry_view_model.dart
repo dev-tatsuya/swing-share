@@ -8,8 +8,8 @@ class EntryViewModel {
   EntryViewModel(this._read);
   final Reader _read;
 
-  Future<void> post(String body) async {
-    await _read(repo).setPost(body);
+  Future<void> post(String body, String? localImagePath) async {
+    await _read(repo).setPost(body, localImagePath);
     _read(homeVm).refresh();
   }
 }

@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:path/path.dart';
 import 'package:swing_share/domain/model/comment.dart' as domain;
 import 'package:swing_share/domain/model/post.dart' as domain;
 import 'package:swing_share/domain/repository/repository.dart';
@@ -92,14 +96,22 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<void> setPost(String body) async {
+  Future<void> setPost(String body, String? localImagePath) async {
     final profile = await _service.documentFuture<Profile>(
       path: APIPath.user(uid!),
       builder: (data, documentId) => Profile.fromMap(data, documentId),
     );
 
+    final docId = documentIdFromCurrentDate;
+    String? path;
+
+    if (localImagePath != null) {
+      path = '${APIPath.post(uid!, docId)}/${basename(localImagePath)}';
+      await FirebaseStorage.instance.ref(path).putFile(File(localImagePath));
+    }
+
     await _service.setData(
-      path: APIPath.post(uid!, documentIdFromCurrentDate),
+      path: APIPath.post(uid!, docId),
       data: <String, dynamic>{
         'author': <String, dynamic>{
           'name': profile.name,
@@ -108,6 +120,7 @@ class RepositoryImpl implements Repository {
         },
         'body': body,
         'createdAt': DateTime.now(),
+        'imagePath': path,
       },
     );
   }
