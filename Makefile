@@ -1,3 +1,7 @@
+.PHONY: clean
+clean:
+	fvm flutter clean
+
 .PHONY: test
 test:
 	fvm flutter test

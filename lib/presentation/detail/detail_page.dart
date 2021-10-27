@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -11,13 +12,35 @@ import 'package:swing_share/presentation/detail/detail_view_model.dart';
 import 'package:swing_share/presentation/login/login_sheet.dart';
 import 'package:swing_share/util/color.dart';
 
-class DetailPage extends ConsumerWidget {
+class DetailPage extends ConsumerStatefulWidget {
   const DetailPage(this.post, {Key? key}) : super(key: key);
 
   final Post post;
 
   @override
-  Widget build(BuildContext context, ref) {
+  ConsumerState<DetailPage> createState() => _DetailPageState();
+}
+
+class _DetailPageState extends ConsumerState<DetailPage> {
+  String? imageUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.post.imagePath != null) {
+      downloadImageUrl();
+    }
+  }
+
+  Future<void> downloadImageUrl() async {
+    imageUrl = await FirebaseStorage.instance
+        .ref(widget.post.imagePath)
+        .getDownloadURL();
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final auth = ref.watch(authStateChangesProvider);
     final isLogin = auth.asData?.value?.uid != null;
 
@@ -31,9 +54,8 @@ class DetailPage extends ConsumerWidget {
       ),
       body: SingleChildScrollView(
         child: StreamBuilder<List<Comment>>(
-            stream: ref
-                .watch(detailVm)
-                .commentsStream(post.profile.id ?? '', post.id ?? ''),
+            stream: ref.watch(detailVm).commentsStream(
+                widget.post.profile.id ?? '', widget.post.id ?? ''),
             builder: (context, snapshot) {
               return SafeArea(
                 child: Column(
@@ -43,7 +65,7 @@ class DetailPage extends ConsumerWidget {
                     _buildBody(),
                     _buildFooter(context, snapshot.data, isLogin),
                     if (snapshot.hasData)
-                      CommentList(post, comments: snapshot.data),
+                      CommentList(widget.post, comments: snapshot.data),
                   ],
                 ),
               );
@@ -62,7 +84,7 @@ class DetailPage extends ConsumerWidget {
             height: 48,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(post.profile.thumbnailPath),
+                image: NetworkImage(widget.post.profile.thumbnailPath),
                 fit: BoxFit.cover,
               ),
               borderRadius: const BorderRadius.all(Radius.circular(24)),
@@ -70,7 +92,7 @@ class DetailPage extends ConsumerWidget {
           ),
         ),
         Text(
-          post.profile.name,
+          widget.post.profile.name,
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -79,7 +101,7 @@ class DetailPage extends ConsumerWidget {
         const Spacer(),
         Padding(
           padding: const EdgeInsets.only(right: 16),
-          child: CustomPopupMenu(post),
+          child: CustomPopupMenu(widget.post),
         ),
       ],
     );
@@ -92,23 +114,23 @@ class DetailPage extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            post.body.replaceAll('\\n', '\n'),
+            widget.post.body.replaceAll('\\n', '\n'),
             style: const TextStyle(fontSize: 16.4),
           ),
-          if (post.imagePath != null)
+          if (imageUrl != null)
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
                 child: Image.network(
-                  post.imagePath!,
+                  imageUrl!,
                 ),
               ),
             ),
           Padding(
             padding: const EdgeInsets.only(top: 16),
             child: Text(
-              post.createdAt.toString(),
+              widget.post.createdAt.toString(),
               style: const TextStyle(fontSize: 14, color: Colors.white60),
             ),
           ),
@@ -137,7 +159,8 @@ class DetailPage extends ConsumerWidget {
               Navigator.of(context, rootNavigator: true).push(
                 MaterialPageRoute(
                   fullscreenDialog: true,
-                  builder: (_) => CommentEntryPage(post, comments: comments),
+                  builder: (_) =>
+                      CommentEntryPage(widget.post, comments: comments),
                 ),
               );
             },
