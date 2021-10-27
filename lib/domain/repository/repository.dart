@@ -12,7 +12,9 @@ abstract class Repository {
   Future<void> setPost(String body);
   Future<void> deletePost(String postId);
   Stream<List<Post>> userPostsStream();
+  Stream<List<Post>> userPostsStream2({DateTime? lastPostDateTime});
   Stream<List<domain.Post>> allPostsStream();
+  Stream<List<domain.Post>> allPostsStream2({DateTime? lastPostDateTime});
 
   /// comment
   Future<void> setComment(

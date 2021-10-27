@@ -1,7 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:swing_share/domain/model/comment.dart' as domain;
 import 'package:swing_share/domain/model/post.dart' as domain;
-import 'package:swing_share/domain/model/profile.dart' as domain;
 import 'package:swing_share/domain/repository/repository.dart';
 import 'package:swing_share/infra/model/comment.dart';
 import 'package:swing_share/infra/model/post.dart';
@@ -9,7 +9,6 @@ import 'package:swing_share/infra/model/profile.dart';
 import 'package:swing_share/infra/service/auth_service_impl.dart';
 import 'package:swing_share/infra/service/firestore/api_path.dart';
 import 'package:swing_share/infra/service/firestore/firestore_service.dart';
-import 'package:swing_share/presentation/login/login_view_model.dart';
 
 String get documentIdFromCurrentDate => DateTime.now().toIso8601String();
 
@@ -38,23 +37,25 @@ class RepositoryImpl implements Repository {
   Stream<List<domain.Post>> allPostsStream() {
     return _service.collectionGroupStream<domain.Post>(
       path: 'posts',
-      builder: (data, documentId) {
-        final model = Post.fromMap(data, documentId);
-        final author = model.author;
-        final id = author?['ref'].split('/')[1] ?? '';
-        final name = author?['name'] ?? defaultName;
-        final thumbnailPath = author?['thumbnailPath'] ?? defaultPhotoUrl;
+      builder: (data, documentId) => Post.fromMap(data, documentId).toEntity(),
+      queryBuilder: (query) => query.orderBy('createdAt', descending: true),
+    );
+  }
 
-        return domain.Post(
-          id: model.id,
-          profile:
-              domain.Profile(id: id, name: name, thumbnailPath: thumbnailPath),
-          body: model.body ?? '',
-          createdAt: model.createdAt,
-          commentCount: model.commentCount,
-        );
+  @override
+  Stream<List<domain.Post>> allPostsStream2({DateTime? lastPostDateTime}) {
+    return _service.collectionGroupStream<domain.Post>(
+      path: 'posts',
+      builder: (data, documentId) => Post.fromMap(data, documentId).toEntity(),
+      queryBuilder: (query) {
+        if (lastPostDateTime == null) {
+          return query.orderBy('createdAt', descending: true).limit(10);
+        }
+
+        return query
+            .orderBy('createdAt', descending: true)
+            .startAfter([Timestamp.fromDate(lastPostDateTime)]).limit(10);
       },
-      sort: (lhs, rhs) => rhs.createdAt!.compareTo(lhs.createdAt!),
     );
   }
 
@@ -64,6 +65,23 @@ class RepositoryImpl implements Repository {
       path: APIPath.posts(uid!),
       builder: (data, documentId) => Post.fromMap(data, documentId),
       sort: (lhs, rhs) => rhs.createdAt!.compareTo(lhs.createdAt!),
+    );
+  }
+
+  @override
+  Stream<List<Post>> userPostsStream2({DateTime? lastPostDateTime}) {
+    return _service.collectionStream<Post>(
+      path: APIPath.posts(uid!),
+      builder: (data, documentId) => Post.fromMap(data, documentId),
+      queryBuilder: (query) {
+        if (lastPostDateTime == null) {
+          return query.orderBy('createdAt', descending: true).limit(7);
+        }
+
+        return query
+            .orderBy('createdAt', descending: true)
+            .startAfter([Timestamp.fromDate(lastPostDateTime)]).limit(7);
+      },
     );
   }
 

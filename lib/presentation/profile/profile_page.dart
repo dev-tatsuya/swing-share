@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:swing_share/domain/model/post.dart';
@@ -27,7 +25,6 @@ class ProfilePage extends ConsumerWidget {
         stream: ref.watch(profileVm).userPosts,
         builder: (context, snapshot) {
           final data = snapshot.data;
-          log('data: $data');
 
           return Scaffold(
             appBar: AppBar(
@@ -56,7 +53,7 @@ class ProfilePage extends ConsumerWidget {
                 ),
               ),
             ),
-            body: Timeline(posts: data?.posts),
+            body: Timeline(posts: data?.posts ?? []),
           );
         });
   }
