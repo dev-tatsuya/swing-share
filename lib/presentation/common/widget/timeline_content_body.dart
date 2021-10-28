@@ -1,10 +1,9 @@
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:swing_share/domain/model/post.dart';
 import 'package:swing_share/presentation/common/widget/custom_popup_menu.dart';
 import 'package:swing_share/util/color.dart';
 
-class TimelineContentBody extends StatefulWidget {
+class TimelineContentBody extends StatelessWidget {
   const TimelineContentBody(
     this.post, {
     Key? key,
@@ -13,28 +12,6 @@ class TimelineContentBody extends StatefulWidget {
 
   final Post post;
   final bool isWriting;
-
-  @override
-  State<TimelineContentBody> createState() => _TimelineContentBodyState();
-}
-
-class _TimelineContentBodyState extends State<TimelineContentBody> {
-  String? imageUrl;
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.post.imagePath != null) {
-      downloadImageUrl();
-    }
-  }
-
-  Future<void> downloadImageUrl() async {
-    imageUrl = await FirebaseStorage.instance
-        .ref(widget.post.imagePath)
-        .getDownloadURL();
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +28,7 @@ class _TimelineContentBodyState extends State<TimelineContentBody> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    widget.post.profile.name,
+                    post.profile.name,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
@@ -59,12 +36,12 @@ class _TimelineContentBodyState extends State<TimelineContentBody> {
                   Row(
                     children: [
                       Text(
-                        widget.post.createdAt.toString(),
+                        post.createdAt.toString(),
                         style:
                             const TextStyle(fontSize: 14, color: AppColor.gray),
                       ),
-                      if (!widget.isWriting) const SizedBox(width: 4),
-                      if (!widget.isWriting) CustomPopupMenu(widget.post),
+                      if (!isWriting) const SizedBox(width: 4),
+                      if (!isWriting) CustomPopupMenu(post),
                     ],
                   ),
                 ],
@@ -72,15 +49,15 @@ class _TimelineContentBodyState extends State<TimelineContentBody> {
             ),
             Padding(
               padding: const EdgeInsets.only(right: 12),
-              child: Text(widget.post.body.replaceAll('\\n', '\n')),
+              child: Text(post.body.replaceAll('\\n', '\n')),
             ),
-            if (imageUrl != null)
+            if (post.imagePath != null)
               Padding(
                 padding: const EdgeInsets.only(top: 8, right: 12),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
                   child: Image.network(
-                    imageUrl!,
+                    post.imagePath!,
                   ),
                 ),
               ),

@@ -1,11 +1,9 @@
 import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:swing_share/domain/model/post.dart';
-import 'package:swing_share/infra/model/post.dart' as model;
 import 'package:swing_share/presentation/common/widget/timeline.dart';
 import 'package:swing_share/presentation/entry/entry_page.dart';
 import 'package:swing_share/presentation/home/home_view_model.dart';
@@ -49,21 +47,14 @@ class _HomePageState extends ConsumerState<HomePage> {
         ),
         toolbarHeight: 44,
       ),
-      body: StreamBuilder<List<DocumentSnapshot>>(
-        stream: ref.watch(homeVm).postsStream,
+      body: StreamBuilder<List<Post>>(
+        stream: ref.watch(homeVm).postStream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             log(snapshot.error.toString());
           }
 
-          final posts = snapshot.data
-              ?.map((e) => model.Post.fromMap(
-                    e.data() as Map<String, dynamic>,
-                    e.id,
-                  ).toEntity())
-              .toList();
-
-          return Timeline(posts: posts ?? []);
+          return Timeline(posts: snapshot.data ?? []);
         },
       ),
     );

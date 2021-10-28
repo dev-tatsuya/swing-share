@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:swing_share/domain/model/post.dart';
+import 'package:swing_share/infra/model/post.dart' as model;
 import 'package:swing_share/presentation/base_page.dart';
 import 'package:swing_share/router/home_router.dart';
 
@@ -9,6 +11,7 @@ final homeVm = Provider.autoDispose((ref) => HomeViewModel(ref.read));
 
 class HomeViewModel {
   HomeViewModel(this._read) {
+    documentListController = BehaviorSubject.seeded([]);
     postController = BehaviorSubject.seeded([]);
     hasNextController = BehaviorSubject.seeded(false);
   }
@@ -17,11 +20,16 @@ class HomeViewModel {
   HomeRouter get _homeRouter => _read(homeRouterProvider);
 
   List<DocumentSnapshot> documentList = [];
-  late BehaviorSubject<List<DocumentSnapshot>> postController;
-  Stream<List<DocumentSnapshot>> get postsStream => postController.stream;
+  late BehaviorSubject<List<DocumentSnapshot>> documentListController;
+  late BehaviorSubject<List<Post>> postController;
+  Stream<List<DocumentSnapshot>> get documentListStream =>
+      documentListController.stream;
+  Stream<List<Post>> get postStream => postController.stream;
 
   late BehaviorSubject<bool> hasNextController;
   Stream<bool> get hasNextStream => hasNextController.stream;
+
+  final storage = FirebaseStorage.instance;
 
   Future<void> init() async {
     final initList = (await FirebaseFirestore.instance
@@ -35,7 +43,25 @@ class HomeViewModel {
 
     documentList.clear();
     documentList.addAll(initList);
-    postController.sink.add(documentList);
+    documentListController.sink.add(documentList);
+
+    final posts = documentList
+        .map((e) => model.Post.fromMap(e.data() as Map<String, dynamic>, e.id)
+            .toEntity())
+        .toList();
+
+    final convertedList = <Post>[];
+    await Future.forEach(posts, (Post e) async {
+      if (e.imagePath != null) {
+        final storagePath = await storage.ref(e.imagePath).getDownloadURL();
+        print('storagePath: $storagePath');
+        convertedList.add(e.copyWith(imagePath: storagePath));
+      } else {
+        convertedList.add(e);
+      }
+    });
+
+    postController.sink.add(convertedList);
   }
 
   void refresh() => init();
@@ -52,11 +78,29 @@ class HomeViewModel {
     hasNextController.sink.add(hasNext);
 
     documentList.addAll(loadList);
-    postController.sink.add(documentList);
+    documentListController.sink.add(documentList);
+
+    final posts = documentList
+        .map((e) => model.Post.fromMap(e.data() as Map<String, dynamic>, e.id)
+            .toEntity())
+        .toList();
+
+    final convertedList = <Post>[];
+    await Future.forEach(posts, (Post e) async {
+      if (e.imagePath != null) {
+        final storagePath = await storage.ref(e.imagePath).getDownloadURL();
+        print('storagePath: $storagePath');
+        convertedList.add(e.copyWith(imagePath: storagePath));
+      } else {
+        convertedList.add(e);
+      }
+    });
+
+    postController.sink.add(convertedList);
   }
 
   void dispose() {
-    postController.close();
+    documentListController.close();
     hasNextController.close();
   }
 
