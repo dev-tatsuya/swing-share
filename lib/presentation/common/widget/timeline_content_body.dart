@@ -69,7 +69,7 @@ class TimelineContentBody extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 8, right: 12),
                 child: SizedBox(
-                  height: 300,
+                  height: 400,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8.0),
                     child: FlickMultiPlayer(
