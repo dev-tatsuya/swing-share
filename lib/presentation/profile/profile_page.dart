@@ -6,6 +6,7 @@ import 'package:swing_share/domain/model/user_posts.dart';
 import 'package:swing_share/presentation/common/widget/timeline.dart';
 import 'package:swing_share/presentation/login/login_view_model.dart';
 import 'package:swing_share/presentation/profile/profile_view_model.dart';
+import 'package:swing_share/presentation/video_player/flick_multi_manager.dart';
 
 class ProfileState {
   ProfileState({
@@ -53,7 +54,10 @@ class ProfilePage extends ConsumerWidget {
                 ),
               ),
             ),
-            body: Timeline(posts: data?.posts ?? []),
+            body: Timeline(
+              posts: data?.posts ?? [],
+              flickMultiManager: FlickMultiManager(),
+            ),
           );
         });
   }

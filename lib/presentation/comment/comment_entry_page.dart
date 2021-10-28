@@ -6,6 +6,7 @@ import 'package:swing_share/infra/repository/repository_impl.dart';
 import 'package:swing_share/presentation/comment/comment_list.dart';
 import 'package:swing_share/presentation/common/widget/send_button.dart';
 import 'package:swing_share/presentation/common/widget/timeline_content.dart';
+import 'package:swing_share/presentation/video_player/flick_multi_manager.dart';
 import 'package:swing_share/util/color.dart';
 import 'package:swing_share/util/string.dart';
 
@@ -72,7 +73,11 @@ class _CommentEntryPageState extends ConsumerState<CommentEntryPage> {
         child: SafeArea(
           child: Column(
             children: [
-              TimelineContent(widget.post, isWriting: true),
+              TimelineContent(
+                widget.post,
+                isWriting: true,
+                flickMultiManager: FlickMultiManager(),
+              ),
               CommentList(widget.post,
                   comments: widget.comments, isWriting: true),
               TextField(

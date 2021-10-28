@@ -121,6 +121,7 @@ class RepositoryImpl implements Repository {
         'body': body,
         'createdAt': DateTime.now(),
         'imagePath': path,
+        'videoPath': null,
       },
     );
   }

@@ -13,6 +13,7 @@ abstract class Post with _$Post {
     required DateTime? createdAt,
     required int commentCount,
     required String? imagePath,
+    required String? videoPath,
   }) = _Post;
 
   int get incrementedCount => commentCount + 1;

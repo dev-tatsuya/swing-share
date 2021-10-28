@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:swing_share/domain/model/post.dart';
 import 'package:swing_share/presentation/common/widget/custom_popup_menu.dart';
+import 'package:swing_share/presentation/video_player/flick_multi_manager.dart';
+import 'package:swing_share/presentation/video_player/flick_multi_player.dart';
 import 'package:swing_share/util/color.dart';
 
 class TimelineContentBody extends StatelessWidget {
@@ -8,10 +10,12 @@ class TimelineContentBody extends StatelessWidget {
     this.post, {
     Key? key,
     this.isWriting = false,
+    required this.flickMultiManager,
   }) : super(key: key);
 
   final Post post;
   final bool isWriting;
+  final FlickMultiManager flickMultiManager;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +62,20 @@ class TimelineContentBody extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8.0),
                   child: Image.network(
                     post.imagePath!,
+                  ),
+                ),
+              ),
+            if (post.videoPath != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8, right: 12),
+                child: SizedBox(
+                  height: 300,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: FlickMultiPlayer(
+                      url: post.videoPath!,
+                      flickMultiManager: flickMultiManager,
+                    ),
                   ),
                 ),
               ),

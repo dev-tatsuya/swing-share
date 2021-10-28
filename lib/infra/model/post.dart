@@ -11,6 +11,7 @@ class Post {
     this.author,
     this.commentCount = 0,
     this.imagePath,
+    this.videoPath,
   });
 
   final String? id;
@@ -19,6 +20,7 @@ class Post {
   final Map<String, dynamic>? author;
   final int commentCount;
   final String? imagePath;
+  final String? videoPath;
 
   factory Post.fromMap(
     Map<String, dynamic>? data,
@@ -37,6 +39,7 @@ class Post {
     final map = data['author'] as Map<String, dynamic>?;
     final commentCount = data['commentCount'] as int?;
     final imagePath = data['imagePath'] as String?;
+    final videoPath = data['videoPath'] as String?;
 
     return Post(
       id: documentId,
@@ -45,6 +48,7 @@ class Post {
       author: map,
       commentCount: commentCount ?? 0,
       imagePath: imagePath,
+      videoPath: videoPath,
     );
   }
 
@@ -68,6 +72,7 @@ class Post {
       createdAt: createdAt,
       commentCount: commentCount,
       imagePath: imagePath,
+      videoPath: videoPath,
     );
   }
 }

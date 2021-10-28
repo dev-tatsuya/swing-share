@@ -6,16 +6,19 @@ import 'package:swing_share/domain/model/post.dart';
 import 'package:swing_share/presentation/common/widget/last_indicator.dart';
 import 'package:swing_share/presentation/common/widget/timeline_content.dart';
 import 'package:swing_share/presentation/home/home_view_model.dart';
+import 'package:swing_share/presentation/video_player/flick_multi_manager.dart';
 
 class Timeline extends ConsumerWidget {
   const Timeline({
     Key? key,
     this.posts = const [],
     this.isHome = true,
+    required this.flickMultiManager,
   }) : super(key: key);
 
   final List<Post> posts;
   final bool isHome;
+  final FlickMultiManager flickMultiManager;
 
   @override
   Widget build(BuildContext context, ref) {
@@ -53,7 +56,10 @@ class Timeline extends ConsumerWidget {
                       },
                       child: Container(
                         color: Colors.transparent,
-                        child: TimelineContent(posts[index]),
+                        child: TimelineContent(
+                          posts[index],
+                          flickMultiManager: flickMultiManager,
+                        ),
                       ),
                     );
                   },

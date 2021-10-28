@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:swing_share/domain/model/post.dart';
 import 'package:swing_share/presentation/common/widget/timeline_content_body.dart';
+import 'package:swing_share/presentation/video_player/flick_multi_manager.dart';
 import 'package:swing_share/util/color.dart';
 
 class TimelineContent extends StatelessWidget {
@@ -8,10 +9,12 @@ class TimelineContent extends StatelessWidget {
     this.post, {
     Key? key,
     this.isWriting = false,
+    required this.flickMultiManager,
   }) : super(key: key);
 
   final Post post;
   final bool isWriting;
+  final FlickMultiManager flickMultiManager;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +61,11 @@ class TimelineContent extends StatelessWidget {
                 ],
               ),
             ),
-            TimelineContentBody(post, isWriting: isWriting),
+            TimelineContentBody(
+              post,
+              isWriting: isWriting,
+              flickMultiManager: flickMultiManager,
+            ),
           ],
         ),
         const Divider(height: 0),
