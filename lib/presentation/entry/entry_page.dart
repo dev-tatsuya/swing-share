@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,6 +8,7 @@ import 'package:swing_share/presentation/common/widget/send_button.dart';
 import 'package:swing_share/presentation/entry/entry_view_model.dart';
 import 'package:swing_share/util/color.dart';
 import 'package:swing_share/util/string.dart';
+import 'package:video_player/video_player.dart';
 
 class EntryPage extends ConsumerStatefulWidget {
   const EntryPage({Key? key}) : super(key: key);
@@ -20,6 +22,7 @@ class _EntryPageState extends ConsumerState<EntryPage> {
   late FocusNode _focusNode;
   String get _body => trimLastBlankLine(_ctrl.text);
   String? localImagePath;
+  String? localVideoPath;
 
   @override
   void initState() {
@@ -46,11 +49,32 @@ class _EntryPageState extends ConsumerState<EntryPage> {
             if (localImagePath != null) {
               Directory(localImagePath!).delete(recursive: true);
             }
+            if (localVideoPath != null) {
+              Directory(localVideoPath!).delete(recursive: true);
+            }
             Navigator.pop(context);
           },
           child: const Icon(Icons.clear),
         ),
         actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: GestureDetector(
+              onTap: () async {
+                _focusNode.unfocus();
+
+                final file =
+                    await ImagePicker().pickVideo(source: ImageSource.gallery);
+                if (file == null) {
+                  return;
+                }
+                localVideoPath = file.path;
+                print('localVideoPath: $localVideoPath');
+                setState(() {});
+              },
+              child: const Icon(Icons.video_library),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: GestureDetector(
@@ -74,10 +98,15 @@ class _EntryPageState extends ConsumerState<EntryPage> {
               child: SendButton(
                 disabled: _body.isEmpty,
                 onTap: () async {
-                  await ref.read(entryVm).post(_body, localImagePath);
+                  await ref
+                      .read(entryVm)
+                      .post(_body, localImagePath, localVideoPath);
 
                   if (localImagePath != null) {
                     Directory(localImagePath!).delete(recursive: true);
+                  }
+                  if (localVideoPath != null) {
+                    Directory(localVideoPath!).delete(recursive: true);
                   }
                   Navigator.pop(context);
                 },
@@ -114,6 +143,19 @@ class _EntryPageState extends ConsumerState<EntryPage> {
                   borderRadius: BorderRadius.circular(8.0),
                   child: Image.file(
                     File(localImagePath!),
+                  ),
+                ),
+              ),
+            if (localVideoPath != null)
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: FlickVideoPlayer(
+                    flickManager: FlickManager(
+                      videoPlayerController:
+                          VideoPlayerController.file(File(localVideoPath!)),
+                    ),
                   ),
                 ),
               ),

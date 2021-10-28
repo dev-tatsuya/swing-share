@@ -60,5 +60,10 @@
 	<string>カメラを使用します</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>動画を使用します</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

@@ -54,6 +54,7 @@ dependencies:
   path_provider: ^2.0.5
   rxdart: ^0.27.1
   sign_in_with_apple: ^3.0.0
+  video_player: ^2.2.5
   visibility_detector: ^0.2.2
   webview_flutter: ^2.0.10
 

@@ -9,7 +9,8 @@ abstract class Repository {
   Stream<Profile> userStream();
 
   /// post
-  Future<void> setPost(String body, String? localImagePath);
+  Future<void> setPost(
+      String body, String? localImagePath, String? localVideoPath);
   Future<void> deletePost(String postId);
   Stream<List<Post>> userPostsStream();
   Stream<List<Post>> userPostsStream2({DateTime? lastPostDateTime});

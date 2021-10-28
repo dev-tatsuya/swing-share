@@ -96,18 +96,30 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<void> setPost(String body, String? localImagePath) async {
+  Future<void> setPost(
+      String body, String? localImagePath, String? localVideoPath) async {
     final profile = await _service.documentFuture<Profile>(
       path: APIPath.user(uid!),
       builder: (data, documentId) => Profile.fromMap(data, documentId),
     );
 
     final docId = documentIdFromCurrentDate;
-    String? path;
+    String? imagePath;
 
     if (localImagePath != null) {
-      path = '${APIPath.post(uid!, docId)}/${basename(localImagePath)}';
-      await FirebaseStorage.instance.ref(path).putFile(File(localImagePath));
+      imagePath = '${APIPath.post(uid!, docId)}/${basename(localImagePath)}';
+      await FirebaseStorage.instance
+          .ref(imagePath)
+          .putFile(File(localImagePath));
+    }
+
+    String? videoPath;
+
+    if (localVideoPath != null) {
+      videoPath = '${APIPath.post(uid!, docId)}/${basename(localVideoPath)}';
+      await FirebaseStorage.instance
+          .ref(videoPath)
+          .putFile(File(localVideoPath));
     }
 
     await _service.setData(
@@ -120,8 +132,8 @@ class RepositoryImpl implements Repository {
         },
         'body': body,
         'createdAt': DateTime.now(),
-        'imagePath': path,
-        'videoPath': null,
+        'imagePath': imagePath,
+        'videoPath': videoPath,
       },
     );
   }
