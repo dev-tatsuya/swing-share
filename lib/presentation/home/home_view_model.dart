@@ -52,13 +52,18 @@ class HomeViewModel {
 
     final convertedList = <Post>[];
     await Future.forEach(posts, (Post e) async {
+      String? imageStoragePath;
       if (e.imagePath != null) {
-        final storagePath = await storage.ref(e.imagePath).getDownloadURL();
-        print('storagePath: $storagePath');
-        convertedList.add(e.copyWith(imagePath: storagePath));
-      } else {
-        convertedList.add(e);
+        imageStoragePath = await storage.ref(e.imagePath).getDownloadURL();
       }
+
+      String? videoStoragePath;
+      if (e.videoPath != null) {
+        videoStoragePath = await storage.ref(e.videoPath).getDownloadURL();
+      }
+
+      convertedList.add(
+          e.copyWith(imagePath: imageStoragePath, videoPath: videoStoragePath));
     });
 
     postController.sink.add(convertedList);
@@ -87,13 +92,18 @@ class HomeViewModel {
 
     final convertedList = <Post>[];
     await Future.forEach(posts, (Post e) async {
+      String? imageStoragePath;
       if (e.imagePath != null) {
-        final storagePath = await storage.ref(e.imagePath).getDownloadURL();
-        print('storagePath: $storagePath');
-        convertedList.add(e.copyWith(imagePath: storagePath));
-      } else {
-        convertedList.add(e);
+        imageStoragePath = await storage.ref(e.imagePath).getDownloadURL();
       }
+
+      String? videoStoragePath;
+      if (e.videoPath != null) {
+        videoStoragePath = await storage.ref(e.videoPath).getDownloadURL();
+      }
+
+      convertedList.add(
+          e.copyWith(imagePath: imageStoragePath, videoPath: videoStoragePath));
     });
 
     postController.sink.add(convertedList);
