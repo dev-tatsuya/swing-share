@@ -17,6 +17,7 @@ class EntryPage extends ConsumerStatefulWidget {
 
 class _EntryPageState extends ConsumerState<EntryPage> {
   late TextEditingController _ctrl;
+  late FocusNode _focusNode;
   String get _body => trimLastBlankLine(_ctrl.text);
   String? localImagePath;
 
@@ -24,11 +25,13 @@ class _EntryPageState extends ConsumerState<EntryPage> {
   void initState() {
     super.initState();
     _ctrl = TextEditingController();
+    _focusNode = FocusNode();
   }
 
   @override
   void dispose() {
     _ctrl.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -52,6 +55,8 @@ class _EntryPageState extends ConsumerState<EntryPage> {
             padding: const EdgeInsets.only(right: 16),
             child: GestureDetector(
               onTap: () async {
+                _focusNode.unfocus();
+
                 final file =
                     await ImagePicker().pickImage(source: ImageSource.gallery);
                 if (file == null) {
@@ -86,6 +91,7 @@ class _EntryPageState extends ConsumerState<EntryPage> {
         child: Column(
           children: [
             TextField(
+              focusNode: _focusNode,
               style: const TextStyle(fontSize: 16.4),
               autofocus: true,
               cursorColor: Colors.blueGrey,
