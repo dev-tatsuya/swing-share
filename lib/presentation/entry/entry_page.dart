@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:swing_share/presentation/common/widget/send_button.dart';
 import 'package:swing_share/presentation/entry/entry_view_model.dart';
+import 'package:swing_share/presentation/entry/trimmer_view.dart';
 import 'package:swing_share/util/color.dart';
 import 'package:swing_share/util/string.dart';
 import 'package:video_player/video_player.dart';
@@ -61,14 +63,26 @@ class _EntryPageState extends ConsumerState<EntryPage> {
             padding: const EdgeInsets.only(right: 16),
             child: GestureDetector(
               onTap: () async {
-                _focusNode.unfocus();
+                final result = await FilePicker.platform.pickFiles(
+                  type: FileType.video,
+                  allowCompression: false,
+                );
 
-                final file =
-                    await ImagePicker().pickVideo(source: ImageSource.gallery);
-                if (file == null) {
+                if (result == null) {
                   return;
                 }
-                localVideoPath = file.path;
+
+                final outputPath = await Navigator.of(context).push<String>(
+                  MaterialPageRoute(builder: (context) {
+                    return TrimmerView(File(result.files.single.path!));
+                  }),
+                );
+
+                if (outputPath == null) {
+                  return;
+                }
+
+                localVideoPath = outputPath;
                 print('localVideoPath: $localVideoPath');
                 setState(() {});
               },
@@ -117,6 +131,7 @@ class _EntryPageState extends ConsumerState<EntryPage> {
         toolbarHeight: 44,
       ),
       body: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Column(
           children: [
             TextField(
@@ -148,7 +163,7 @@ class _EntryPageState extends ConsumerState<EntryPage> {
               ),
             if (localVideoPath != null)
               Padding(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 44),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
                   child: FlickVideoPlayer(

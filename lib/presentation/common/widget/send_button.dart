@@ -5,10 +5,12 @@ class SendButton extends StatelessWidget {
     Key? key,
     this.disabled = false,
     required this.onTap,
+    this.label = '投稿',
   }) : super(key: key);
 
   final bool disabled;
   final VoidCallback onTap;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class SendButton extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Text(
-            '投稿',
+            label,
             style: TextStyle(
                 color: disabled ? Colors.white.withOpacity(0.2) : Colors.white),
           ),

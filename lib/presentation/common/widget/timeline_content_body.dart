@@ -68,14 +68,11 @@ class TimelineContentBody extends StatelessWidget {
             if (post.videoPath != null)
               Padding(
                 padding: const EdgeInsets.only(top: 8, right: 12),
-                child: SizedBox(
-                  height: 400,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: FlickMultiPlayer(
-                      url: post.videoPath!,
-                      flickMultiManager: flickMultiManager,
-                    ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: FlickMultiPlayer(
+                    url: post.videoPath!,
+                    flickMultiManager: flickMultiManager,
                   ),
                 ),
               ),

@@ -32,6 +32,7 @@ dependencies:
   crypto: ^3.0.1
   cupertino_icons: ^1.0.3
   enum_to_string: ^2.0.1
+  file_picker: ^4.1.6
   firebase_auth: ^3.0.1
   firebase_core: ^1.4.0
   firebase_storage: ^10.0.6
@@ -55,6 +56,7 @@ dependencies:
   rxdart: ^0.27.1
   sign_in_with_apple: ^3.0.0
   video_player: ^2.2.5
+  video_trimmer: ^0.6.0
   visibility_detector: ^0.2.2
   webview_flutter: ^2.0.10
 
