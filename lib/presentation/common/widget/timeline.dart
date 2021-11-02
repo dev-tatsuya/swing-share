@@ -24,52 +24,47 @@ class Timeline extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     print('posts: $posts');
 
-    return StreamBuilder<bool>(
-      stream: ref.watch(homeVm).hasNextStream,
-      builder: (context, snapshot) {
-        final hasNext = snapshot.data ?? false;
+    final hasNext = ref.watch(homeVm).hasNext;
 
-        return Scrollbar(
-          child: CustomScrollView(
-            physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics()),
-            slivers: [
-              SliverSafeArea(
-                sliver: CupertinoSliverRefreshControl(
-                  onRefresh: () async => ref.read(homeVm).init(),
-                ),
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    if (index == posts.length && hasNext) {
-                      return LastIndicator(() {
-                        ref.read(homeVm).loadMore();
-                      });
-                    }
-
-                    return GestureDetector(
-                      onTap: () {
-                        if (isHome) {
-                          ref.read(homeVm).pushDetailPage(posts[index]);
-                        }
-                      },
-                      child: Container(
-                        color: Colors.transparent,
-                        child: TimelineContent(
-                          posts[index],
-                          flickMultiManager: flickMultiManager,
-                        ),
-                      ),
-                    );
-                  },
-                  childCount: posts.length + (hasNext ? 1 : 0),
-                ),
-              ),
-            ],
+    return Scrollbar(
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics()),
+        slivers: [
+          SliverSafeArea(
+            sliver: CupertinoSliverRefreshControl(
+              onRefresh: () async => ref.read(homeVm.notifier).refresh(),
+            ),
           ),
-        );
-      },
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                if (index == posts.length && hasNext) {
+                  return LastIndicator(() {
+                    ref.read(homeVm.notifier).loadMore();
+                  });
+                }
+
+                return GestureDetector(
+                  onTap: () {
+                    if (isHome) {
+                      ref.read(homeVm.notifier).pushDetailPage(posts[index]);
+                    }
+                  },
+                  child: Container(
+                    color: Colors.transparent,
+                    child: TimelineContent(
+                      posts[index],
+                      flickMultiManager: flickMultiManager,
+                    ),
+                  ),
+                );
+              },
+              childCount: posts.length + (hasNext ? 1 : 0),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

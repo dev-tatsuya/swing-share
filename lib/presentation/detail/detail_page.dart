@@ -1,4 +1,3 @@
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -22,25 +21,18 @@ class DetailPage extends ConsumerStatefulWidget {
 }
 
 class _DetailPageState extends ConsumerState<DetailPage> {
-  String? imageUrl;
-
   @override
   void initState() {
     super.initState();
-    if (widget.post.imagePath != null) {
-      downloadImageUrl();
-    }
-  }
-
-  Future<void> downloadImageUrl() async {
-    imageUrl = await FirebaseStorage.instance
-        .ref(widget.post.imagePath)
-        .getDownloadURL();
-    setState(() {});
+    ref
+        .read(detailVm.notifier)
+        .fetch(widget.post.profile.id ?? '', widget.post.id ?? '');
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(detailVm);
+
     final auth = ref.watch(authStateChangesProvider);
     final isLogin = auth.asData?.value?.uid != null;
 
@@ -53,23 +45,18 @@ class _DetailPageState extends ConsumerState<DetailPage> {
         elevation: 1,
       ),
       body: SingleChildScrollView(
-        child: StreamBuilder<List<Comment>>(
-            stream: ref.watch(detailVm).commentsStream(
-                widget.post.profile.id ?? '', widget.post.id ?? ''),
-            builder: (context, snapshot) {
-              return SafeArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildHeader(),
-                    _buildBody(),
-                    _buildFooter(context, snapshot.data, isLogin),
-                    if (snapshot.hasData)
-                      CommentList(widget.post, comments: snapshot.data),
-                  ],
-                ),
-              );
-            }),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(),
+              _buildBody(),
+              _buildFooter(context, state.comments, isLogin),
+              if (state.comments.isNotEmpty)
+                CommentList(widget.post, comments: state.comments),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -117,13 +104,13 @@ class _DetailPageState extends ConsumerState<DetailPage> {
             widget.post.body.replaceAll('\\n', '\n'),
             style: const TextStyle(fontSize: 16.4),
           ),
-          if (imageUrl != null)
+          if (widget.post.imagePath != null)
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
                 child: Image.network(
-                  imageUrl!,
+                  widget.post.imagePath!,
                 ),
               ),
             ),

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:swing_share/domain/model/comment.dart' as domain;
 import 'package:swing_share/domain/model/post.dart' as domain;
+import 'package:swing_share/domain/model/profile.dart' as domain;
 import 'package:swing_share/domain/repository/repository.dart';
 import 'package:swing_share/infra/model/comment.dart';
 import 'package:swing_share/infra/model/post.dart';
@@ -31,6 +33,7 @@ class RepositoryImpl implements Repository {
   final String? uid;
 
   final _service = FirestoreService.instance;
+  final _storage = FirebaseStorage.instance;
 
   @override
   Future<void> deletePost(String postId) async {
@@ -38,17 +41,8 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Stream<List<domain.Post>> allPostsStream() {
-    return _service.collectionGroupStream<domain.Post>(
-      path: 'posts',
-      builder: (data, documentId) => Post.fromMap(data, documentId).toEntity(),
-      queryBuilder: (query) => query.orderBy('createdAt', descending: true),
-    );
-  }
-
-  @override
-  Stream<List<domain.Post>> allPostsStream2({DateTime? lastPostDateTime}) {
-    return _service.collectionGroupStream<domain.Post>(
+  Future<List<domain.Post>> allPosts({DateTime? lastPostDateTime}) async {
+    final posts = await _service.collectionGroupFuture<domain.Post>(
       path: 'posts',
       builder: (data, documentId) => Post.fromMap(data, documentId).toEntity(),
       queryBuilder: (query) {
@@ -61,22 +55,43 @@ class RepositoryImpl implements Repository {
             .startAfter([Timestamp.fromDate(lastPostDateTime)]).limit(10);
       },
     );
+
+    // TODO: ローカルストレージ上にキャッシュがあれば、それを返却する。
+
+    // TODO: キャッシュがなければ、Cloud Storageからダウンロードしてキャッシュする。
+    // refを実際のURLに変換
+    List<domain.Post> result = [];
+    await Future.forEach(posts, (domain.Post e) async {
+      String? imageStoragePath;
+      if (e.imagePath != null) {
+        try {
+          imageStoragePath = await _storage.ref(e.imagePath).getDownloadURL();
+        } catch (ex) {
+          log('failed to download image: $ex');
+        }
+      }
+
+      String? videoStoragePath;
+      if (e.videoPath != null) {
+        try {
+          videoStoragePath = await _storage.ref(e.videoPath).getDownloadURL();
+        } catch (ex) {
+          log('failed to download video: $ex');
+        }
+      }
+
+      result.add(
+          e.copyWith(imagePath: imageStoragePath, videoPath: videoStoragePath));
+    });
+
+    return result;
   }
 
   @override
-  Stream<List<Post>> userPostsStream() {
-    return _service.collectionStream<Post>(
+  Future<List<domain.Post>> myPosts({DateTime? lastPostDateTime}) async {
+    return _service.collectionFuture<domain.Post>(
       path: APIPath.posts(uid!),
-      builder: (data, documentId) => Post.fromMap(data, documentId),
-      sort: (lhs, rhs) => rhs.createdAt!.compareTo(lhs.createdAt!),
-    );
-  }
-
-  @override
-  Stream<List<Post>> userPostsStream2({DateTime? lastPostDateTime}) {
-    return _service.collectionStream<Post>(
-      path: APIPath.posts(uid!),
-      builder: (data, documentId) => Post.fromMap(data, documentId),
+      builder: (data, documentId) => Post.fromMap(data, documentId).toEntity(),
       queryBuilder: (query) {
         if (lastPostDateTime == null) {
           return query.orderBy('createdAt', descending: true).limit(7);
@@ -139,10 +154,11 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Stream<Profile> userStream() {
-    return _service.documentStream(
+  Future<domain.Profile> profile() {
+    return _service.documentFuture(
       path: APIPath.user(uid!),
-      builder: (data, documentId) => Profile.fromMap(data, documentId),
+      builder: (data, documentId) =>
+          Profile.fromMap(data, documentId).toEntity(),
     );
   }
 
@@ -198,8 +214,18 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Stream<List<domain.Comment>> userCommentStream() {
-    // TODO: implement userCommentStream
+  Future<List<domain.Comment>> postComments(
+      String profileId, String postId) async {
+    return _service.collectionFuture<domain.Comment>(
+      path: APIPath.comments(profileId, postId),
+      builder: (data, documentId) =>
+          Comment.fromMap(data, documentId).toEntity(),
+    );
+  }
+
+  @override
+  Future<List<domain.Comment>> userComments() {
+    // TODO: implement userComments
     throw UnimplementedError();
   }
 }

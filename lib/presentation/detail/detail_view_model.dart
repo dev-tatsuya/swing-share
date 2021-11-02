@@ -1,14 +1,18 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:swing_share/domain/model/comment.dart';
+import 'package:swing_share/domain/repository/repository.dart';
 import 'package:swing_share/infra/repository/repository_impl.dart';
+import 'package:swing_share/presentation/detail/state/detail_state.dart';
 
-final detailVm = Provider.autoDispose((ref) => DetailViewModel(ref.read));
+final detailVm = StateNotifierProvider<DetailViewModel, DetailState>(
+    (ref) => DetailViewModel(ref.read));
 
-class DetailViewModel {
-  DetailViewModel(this._read);
+class DetailViewModel extends StateNotifier<DetailState> {
+  DetailViewModel(this._read) : super(const DetailState());
   final Reader _read;
+  Repository get _repo => _read(repo);
 
-  Stream<List<Comment>> commentsStream(String profileId, String postId) {
-    return _read(repo).postCommentsStream(profileId, postId);
+  Future<void> fetch(String profileId, String postId) async {
+    final items = await _repo.postComments(profileId, postId);
+    state = state.copyWith(comments: items);
   }
 }

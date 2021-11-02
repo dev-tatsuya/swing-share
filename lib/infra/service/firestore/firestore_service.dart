@@ -25,6 +25,22 @@ class FirestoreService {
     await reference.delete();
   }
 
+  Future<List<T>> collectionFuture<T>({
+    required String path,
+    required T Function(Map<String, dynamic> data, String documentId) builder,
+    Query Function(Query query)? queryBuilder,
+  }) async {
+    Query query = FirebaseFirestore.instance.collection(path);
+    if (queryBuilder != null) {
+      query = queryBuilder(query);
+    }
+    final snapshots = await query.get();
+    return snapshots.docs
+        .map((e) => builder(e.data()! as Map<String, dynamic>, e.id))
+        .where((value) => value != null)
+        .toList();
+  }
+
   Stream<List<T>> collectionStream<T>({
     required String path,
     required T Function(Map<String, dynamic> data, String documentId) builder,
@@ -49,6 +65,22 @@ class FirestoreService {
       }
       return result;
     });
+  }
+
+  Future<List<T>> collectionGroupFuture<T>({
+    required String path,
+    required T Function(Map<String, dynamic> data, String documentId) builder,
+    Query Function(Query query)? queryBuilder,
+  }) async {
+    Query query = FirebaseFirestore.instance.collectionGroup(path);
+    if (queryBuilder != null) {
+      query = queryBuilder(query);
+    }
+    final snapshots = await query.get();
+    return snapshots.docs
+        .map((e) => builder(e.data()! as Map<String, dynamic>, e.id))
+        .where((value) => value != null)
+        .toList();
   }
 
   Stream<List<T>> collectionGroupStream<T>({

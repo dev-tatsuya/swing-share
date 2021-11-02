@@ -1,26 +1,25 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:swing_share/domain/model/user_posts.dart';
 import 'package:swing_share/domain/repository/repository.dart';
-import 'package:swing_share/infra/model/post.dart' as model;
-import 'package:swing_share/infra/model/profile.dart' as model;
 import 'package:swing_share/infra/repository/repository_impl.dart';
+import 'package:swing_share/presentation/profile/state/profile_state.dart';
 
-final profileVm = Provider.autoDispose((ref) => ProfileViewModel(ref.read));
+final profileVm =
+    StateNotifierProvider.autoDispose<ProfileViewModel, ProfileState>(
+        (ref) => ProfileViewModel(ref.read));
 
-class ProfileViewModel {
-  ProfileViewModel(this._read);
+class ProfileViewModel extends StateNotifier<ProfileState> {
+  ProfileViewModel(this._read) : super(const ProfileState());
   final Reader _read;
   Repository get _repo => _read(repo);
 
-  Stream<UserPosts> get userPosts {
-    return Rx.combineLatest2(
-      _repo.userStream(),
-      _repo.userPostsStream(),
-      (model.Profile profile, List<model.Post> posts) => UserPosts(
-        profile: profile.toEntity(),
-        posts: posts.map((e) => e.toEntity()).toList(),
-      ),
+  Future<void> fetch({bool loadMore = false}) async {
+    final profile = await _repo.profile();
+    final items = await _repo.myPosts(
+        lastPostDateTime: loadMore ? state.posts.last.createdAt : null);
+    state = state.copyWith(
+      profile: profile,
+      posts: [if (loadMore) ...state.posts, ...items],
+      hasNext: items.length >= 10,
     );
   }
 }

@@ -11,6 +11,6 @@ class EntryViewModel {
   Future<void> post(
       String body, String? localImagePath, String? localVideoPath) async {
     await _read(repo).setPost(body, localImagePath, localVideoPath);
-    _read(homeVm).refresh();
+    _read(homeVm.notifier).refresh();
   }
 }
