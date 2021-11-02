@@ -3,8 +3,9 @@ import 'package:swing_share/domain/repository/repository.dart';
 import 'package:swing_share/infra/repository/repository_impl.dart';
 import 'package:swing_share/presentation/detail/state/detail_state.dart';
 
-final detailVm = StateNotifierProvider<DetailViewModel, DetailState>(
-    (ref) => DetailViewModel(ref.read));
+final detailVm =
+    StateNotifierProvider.autoDispose<DetailViewModel, DetailState>(
+        (ref) => DetailViewModel(ref.read));
 
 class DetailViewModel extends StateNotifier<DetailState> {
   DetailViewModel(this._read) : super(const DetailState());
