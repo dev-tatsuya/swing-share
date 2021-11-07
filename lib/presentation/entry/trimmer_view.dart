@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:swing_share/config/config.dart';
 import 'package:swing_share/presentation/common/widget/send_button.dart';
 import 'package:swing_share/util/color.dart';
 import 'package:video_trimmer/video_trimmer.dart';
@@ -77,9 +78,11 @@ class _TrimmerViewState extends State<TrimmerView> {
                   label: '切り取る',
                   disabled: _progressVisibility,
                   onTap: () async {
-                    if (_endValue - _startValue > 10 * 1000) {
+                    if (_endValue - _startValue >
+                        Config.postableSeconds * 1000) {
                       showOkAlertDialog(
-                          context: context, title: '10秒以内にしてください');
+                          context: context,
+                          title: '${Config.postableSeconds}秒以内にしてください');
                       return;
                     }
 
