@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:swing_share/presentation/video_player/flick_multi_manager.dart';
@@ -27,7 +29,7 @@ class _FlickMultiPlayerState extends State<FlickMultiPlayer> {
   @override
   void initState() {
     flickManager = FlickManager(
-      videoPlayerController: VideoPlayerController.network(widget.url)
+      videoPlayerController: VideoPlayerController.file(File(widget.url))
         ..setLooping(true),
       autoPlay: false,
     );

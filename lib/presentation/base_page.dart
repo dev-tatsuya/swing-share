@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -96,7 +94,7 @@ class _BasePageState extends ConsumerState<BasePage> {
     return StreamBuilder<User?>(
         stream: ref.watch(loginVm).authStateChanges,
         builder: (context, snapshot) {
-          log('authState: ${snapshot.data}');
+          // log('authState: ${snapshot.data}');
           final isLogin = snapshot.data != null;
           return Scaffold(
             body: Stack(children: _buildOffstages(isLogin)),

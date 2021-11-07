@@ -22,8 +22,6 @@ class Timeline extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    print('posts: $posts');
-
     final hasNext = ref.watch(homeVm).hasNext;
 
     return Scrollbar(

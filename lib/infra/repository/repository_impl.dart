@@ -3,8 +3,11 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:swing_share/domain/model/comment.dart' as domain;
 import 'package:swing_share/domain/model/post.dart' as domain;
 import 'package:swing_share/domain/model/profile.dart' as domain;
@@ -12,6 +15,7 @@ import 'package:swing_share/domain/repository/repository.dart';
 import 'package:swing_share/infra/model/comment.dart';
 import 'package:swing_share/infra/model/post.dart';
 import 'package:swing_share/infra/model/profile.dart';
+import 'package:swing_share/infra/model/video_path_ref.dart';
 import 'package:swing_share/infra/service/auth_service_impl.dart';
 import 'package:swing_share/infra/service/firestore/api_path.dart';
 import 'package:swing_share/infra/service/firestore/firestore_service.dart';
@@ -35,6 +39,9 @@ class RepositoryImpl implements Repository {
   final _service = FirestoreService.instance;
   final _storage = FirebaseStorage.instance;
 
+  Future<String> get _docPath async =>
+      (await getApplicationDocumentsDirectory()).path;
+
   @override
   Future<void> deletePost(String postId) async {
     await _service.deleteData(path: APIPath.post(uid!, postId));
@@ -56,32 +63,40 @@ class RepositoryImpl implements Repository {
       },
     );
 
-    // TODO: ローカルストレージ上にキャッシュがあれば、それを返却する。
-
-    // TODO: キャッシュがなければ、Cloud Storageからダウンロードしてキャッシュする。
     // refを実際のURLに変換
     List<domain.Post> result = [];
+    final box = await Hive.openBox('pathRefBox');
+    final pathRefs = box.values.map((e) => e as VideoPathRef).toList();
     await Future.forEach(posts, (domain.Post e) async {
-      String? imageStoragePath;
-      if (e.imagePath != null) {
-        try {
-          imageStoragePath = await _storage.ref(e.imagePath).getDownloadURL();
-        } catch (ex) {
-          log('failed to download image: $ex');
-        }
-      }
-
       String? videoStoragePath;
-      if (e.videoPath != null) {
-        try {
-          videoStoragePath = await _storage.ref(e.videoPath).getDownloadURL();
-        } catch (ex) {
-          log('failed to download video: $ex');
+      final cache =
+          pathRefs.where((pathRef) => pathRef.ref == e.videoPath).toList();
+
+      if (cache.isNotEmpty) {
+        // ローカルストレージ上にキャッシュがあれば、それを返却する。
+        final basePath = cache.first.path;
+        final fullPath = '${await _docPath}/$basePath';
+        log('already cached, fullPath: $fullPath');
+        videoStoragePath = fullPath;
+      } else {
+        // キャッシュがなければ、Cloud Storageからダウンロード後、キャッシュする。
+        if (e.videoPath != null) {
+          try {
+            final urlStr = await _storage.ref(e.videoPath).getDownloadURL();
+            log('first caching, downloadURL: $urlStr');
+            final http.Response responseData =
+                await http.get(Uri.parse(urlStr));
+            final filePath = '${await _docPath}/${basename(e.videoPath!)}';
+            File(filePath).writeAsBytesSync(responseData.bodyBytes);
+            videoStoragePath = filePath;
+
+            box.add(VideoPathRef(e.videoPath!, basename(e.videoPath!)));
+          } catch (ex, st) {
+            log('failed to download video: $ex,\n$st');
+          }
         }
       }
-
-      result.add(
-          e.copyWith(imagePath: imageStoragePath, videoPath: videoStoragePath));
+      result.add(e.copyWith(videoPath: videoStoragePath));
     });
 
     return result;
