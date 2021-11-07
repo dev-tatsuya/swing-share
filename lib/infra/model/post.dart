@@ -12,6 +12,7 @@ class Post {
     this.commentCount = 0,
     this.imagePath,
     this.videoPath,
+    this.videoSize,
   });
 
   final String? id;
@@ -21,6 +22,7 @@ class Post {
   final int commentCount;
   final String? imagePath;
   final String? videoPath;
+  final int? videoSize;
 
   factory Post.fromMap(
     Map<String, dynamic>? data,
@@ -40,6 +42,7 @@ class Post {
     final commentCount = data['commentCount'] as int?;
     final imagePath = data['imagePath'] as String?;
     final videoPath = data['videoPath'] as String?;
+    final videoSize = data['videoSize'] as int?;
 
     return Post(
       id: documentId,
@@ -49,15 +52,17 @@ class Post {
       commentCount: commentCount ?? 0,
       imagePath: imagePath,
       videoPath: videoPath,
+      videoSize: videoSize,
     );
   }
 
   Map<String, dynamic> toMap() => <String, dynamic>{
-        'author': <String, dynamic>{
-          'name': '',
-        },
+        'author': author,
         'body': body,
         'createdAt': createdAt,
+        'imagePath': imagePath,
+        'videoPath': videoPath,
+        'videoSize': videoSize,
       };
 
   domain.Post toEntity() {
@@ -73,6 +78,7 @@ class Post {
       commentCount: commentCount,
       imagePath: imagePath,
       videoPath: videoPath,
+      videoSize: videoSize,
     );
   }
 }

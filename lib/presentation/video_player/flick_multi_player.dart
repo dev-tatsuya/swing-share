@@ -8,16 +8,18 @@ import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class FlickMultiPlayer extends StatefulWidget {
-  const FlickMultiPlayer(
-      {Key? key,
-      required this.url,
-      this.image,
-      required this.flickMultiManager})
-      : super(key: key);
+  const FlickMultiPlayer({
+    Key? key,
+    required this.url,
+    this.image,
+    required this.flickMultiManager,
+    required this.videoSize,
+  }) : super(key: key);
 
   final String url;
   final String? image;
   final FlickMultiManager flickMultiManager;
+  final int? videoSize;
 
   @override
   _FlickMultiPlayerState createState() => _FlickMultiPlayerState();
@@ -84,6 +86,7 @@ class _FlickMultiPlayerState extends State<FlickMultiPlayer> {
           controls: FeedPlayerPortraitControls(
             flickMultiManager: widget.flickMultiManager,
             flickManager: flickManager,
+            videoSize: widget.videoSize,
           ),
         ),
         // flickVideoWithControlsFullscreen: FlickVideoWithControls(

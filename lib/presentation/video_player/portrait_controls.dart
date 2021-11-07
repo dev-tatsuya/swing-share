@@ -4,12 +4,16 @@ import 'package:provider/provider.dart';
 import 'package:swing_share/presentation/video_player/flick_multi_manager.dart';
 
 class FeedPlayerPortraitControls extends StatelessWidget {
-  const FeedPlayerPortraitControls(
-      {Key? key, this.flickMultiManager, this.flickManager})
-      : super(key: key);
+  const FeedPlayerPortraitControls({
+    Key? key,
+    this.flickMultiManager,
+    this.flickManager,
+    required this.videoSize,
+  }) : super(key: key);
 
   final FlickMultiManager? flickMultiManager;
   final FlickManager? flickManager;
+  final int? videoSize;
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +28,32 @@ class FeedPlayerPortraitControls extends StatelessWidget {
           FlickAutoHideChild(
             showIfVideoNotInitialized: false,
             child: Align(
-              alignment: Alignment.topRight,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                decoration: BoxDecoration(
-                  color: Colors.black38,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const FlickLeftDuration(),
+              alignment: Alignment.topCenter,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Visibility(
+                    visible: videoSize != null,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.black38,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text('${videoSize}KB'),
+                    ),
+                  ),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: Colors.black38,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const FlickLeftDuration(),
+                  ),
+                ],
               ),
             ),
           ),

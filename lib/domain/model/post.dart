@@ -14,6 +14,7 @@ abstract class Post with _$Post {
     required int commentCount,
     required String? imagePath,
     required String? videoPath,
+    required int? videoSize,
   }) = _Post;
 
   int get incrementedCount => commentCount + 1;

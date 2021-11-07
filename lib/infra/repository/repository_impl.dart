@@ -128,11 +128,6 @@ class RepositoryImpl implements Repository {
   @override
   Future<void> setPost(
       String body, String? localImagePath, String? localVideoPath) async {
-    final profile = await _service.documentFuture<Profile>(
-      path: APIPath.user(uid!),
-      builder: (data, documentId) => Profile.fromMap(data, documentId),
-    );
-
     final docId = documentIdFromCurrentDate;
     String? imagePath;
 
@@ -144,27 +139,36 @@ class RepositoryImpl implements Repository {
     }
 
     String? videoPath;
+    int? videoSize;
 
     if (localVideoPath != null) {
       videoPath = '${APIPath.post(uid!, docId)}/${basename(localVideoPath)}';
       await FirebaseStorage.instance
           .ref(videoPath)
           .putFile(File(localVideoPath));
+
+      final file = File(localVideoPath);
+      final bytes = file.readAsBytesSync().lengthInBytes;
+      videoSize = bytes ~/ 1024;
     }
+
+    final profile = await _service.documentFuture<Profile>(
+      path: APIPath.user(uid!),
+      builder: (data, documentId) => Profile.fromMap(data, documentId),
+    );
+
+    final model = Post(
+      author: profile.toMapWithRef(),
+      body: body,
+      createdAt: DateTime.now(),
+      imagePath: imagePath,
+      videoPath: videoPath,
+      videoSize: videoSize,
+    );
 
     await _service.setData(
       path: APIPath.post(uid!, docId),
-      data: <String, dynamic>{
-        'author': <String, dynamic>{
-          'name': profile.name,
-          'ref': 'users/$uid',
-          'thumbnailPath': profile.thumbnailPath,
-        },
-        'body': body,
-        'createdAt': DateTime.now(),
-        'imagePath': imagePath,
-        'videoPath': videoPath,
-      },
+      data: model.toMap(),
     );
   }
 

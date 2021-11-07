@@ -23,7 +23,8 @@ class _$PostTearOff {
       required DateTime? createdAt,
       required int commentCount,
       required String? imagePath,
-      required String? videoPath}) {
+      required String? videoPath,
+      required int? videoSize}) {
     return _Post(
       id: id,
       profile: profile,
@@ -32,6 +33,7 @@ class _$PostTearOff {
       commentCount: commentCount,
       imagePath: imagePath,
       videoPath: videoPath,
+      videoSize: videoSize,
     );
   }
 }
@@ -48,6 +50,7 @@ mixin _$Post {
   int get commentCount => throw _privateConstructorUsedError;
   String? get imagePath => throw _privateConstructorUsedError;
   String? get videoPath => throw _privateConstructorUsedError;
+  int? get videoSize => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $PostCopyWith<Post> get copyWith => throw _privateConstructorUsedError;
@@ -64,7 +67,8 @@ abstract class $PostCopyWith<$Res> {
       DateTime? createdAt,
       int commentCount,
       String? imagePath,
-      String? videoPath});
+      String? videoPath,
+      int? videoSize});
 
   $ProfileCopyWith<$Res> get profile;
 }
@@ -86,6 +90,7 @@ class _$PostCopyWithImpl<$Res> implements $PostCopyWith<$Res> {
     Object? commentCount = freezed,
     Object? imagePath = freezed,
     Object? videoPath = freezed,
+    Object? videoSize = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed
@@ -116,6 +121,10 @@ class _$PostCopyWithImpl<$Res> implements $PostCopyWith<$Res> {
           ? _value.videoPath
           : videoPath // ignore: cast_nullable_to_non_nullable
               as String?,
+      videoSize: videoSize == freezed
+          ? _value.videoSize
+          : videoSize // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 
@@ -139,7 +148,8 @@ abstract class _$PostCopyWith<$Res> implements $PostCopyWith<$Res> {
       DateTime? createdAt,
       int commentCount,
       String? imagePath,
-      String? videoPath});
+      String? videoPath,
+      int? videoSize});
 
   @override
   $ProfileCopyWith<$Res> get profile;
@@ -163,6 +173,7 @@ class __$PostCopyWithImpl<$Res> extends _$PostCopyWithImpl<$Res>
     Object? commentCount = freezed,
     Object? imagePath = freezed,
     Object? videoPath = freezed,
+    Object? videoSize = freezed,
   }) {
     return _then(_Post(
       id: id == freezed
@@ -193,6 +204,10 @@ class __$PostCopyWithImpl<$Res> extends _$PostCopyWithImpl<$Res>
           ? _value.videoPath
           : videoPath // ignore: cast_nullable_to_non_nullable
               as String?,
+      videoSize: videoSize == freezed
+          ? _value.videoSize
+          : videoSize // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -207,7 +222,8 @@ class _$_Post extends _Post {
       required this.createdAt,
       required this.commentCount,
       required this.imagePath,
-      required this.videoPath})
+      required this.videoPath,
+      required this.videoSize})
       : super._();
 
   @override
@@ -224,10 +240,12 @@ class _$_Post extends _Post {
   final String? imagePath;
   @override
   final String? videoPath;
+  @override
+  final int? videoSize;
 
   @override
   String toString() {
-    return 'Post(id: $id, profile: $profile, body: $body, createdAt: $createdAt, commentCount: $commentCount, imagePath: $imagePath, videoPath: $videoPath)';
+    return 'Post(id: $id, profile: $profile, body: $body, createdAt: $createdAt, commentCount: $commentCount, imagePath: $imagePath, videoPath: $videoPath, videoSize: $videoSize)';
   }
 
   @override
@@ -252,7 +270,10 @@ class _$_Post extends _Post {
                     .equals(other.imagePath, imagePath)) &&
             (identical(other.videoPath, videoPath) ||
                 const DeepCollectionEquality()
-                    .equals(other.videoPath, videoPath)));
+                    .equals(other.videoPath, videoPath)) &&
+            (identical(other.videoSize, videoSize) ||
+                const DeepCollectionEquality()
+                    .equals(other.videoSize, videoSize)));
   }
 
   @override
@@ -264,7 +285,8 @@ class _$_Post extends _Post {
       const DeepCollectionEquality().hash(createdAt) ^
       const DeepCollectionEquality().hash(commentCount) ^
       const DeepCollectionEquality().hash(imagePath) ^
-      const DeepCollectionEquality().hash(videoPath);
+      const DeepCollectionEquality().hash(videoPath) ^
+      const DeepCollectionEquality().hash(videoSize);
 
   @JsonKey(ignore: true)
   @override
@@ -280,7 +302,8 @@ abstract class _Post extends Post {
       required DateTime? createdAt,
       required int commentCount,
       required String? imagePath,
-      required String? videoPath}) = _$_Post;
+      required String? videoPath,
+      required int? videoSize}) = _$_Post;
   const _Post._() : super._();
 
   @override
@@ -297,6 +320,8 @@ abstract class _Post extends Post {
   String? get imagePath => throw _privateConstructorUsedError;
   @override
   String? get videoPath => throw _privateConstructorUsedError;
+  @override
+  int? get videoSize => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$PostCopyWith<_Post> get copyWith => throw _privateConstructorUsedError;

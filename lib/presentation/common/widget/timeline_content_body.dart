@@ -73,6 +73,7 @@ class TimelineContentBody extends StatelessWidget {
                   child: FlickMultiPlayer(
                     url: post.videoPath!,
                     flickMultiManager: flickMultiManager,
+                    videoSize: post.videoSize,
                   ),
                 ),
               ),

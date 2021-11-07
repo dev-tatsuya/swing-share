@@ -30,6 +30,12 @@ class Profile {
         'thumbnailPath': thumbnailPath,
       };
 
+  Map<String, dynamic> toMapWithRef() => <String, dynamic>{
+        'name': name,
+        'ref': 'users/$id',
+        'thumbnailPath': thumbnailPath,
+      };
+
   domain.Profile toEntity() {
     return domain.Profile(
       id: id,
