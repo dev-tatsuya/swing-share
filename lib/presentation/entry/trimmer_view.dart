@@ -42,13 +42,14 @@ class _TrimmerViewState extends State<TrimmerView> {
 
     String? _value;
 
-    await _trimmer
-        .saveTrimmedVideo(startValue: _startValue, endValue: _endValue)
-        .then((value) {
-      setState(() {
-        _progressVisibility = false;
-        _value = value;
-      });
+    final value = await _trimmer.saveTrimmedVideo(
+      startValue: _startValue,
+      endValue: _endValue,
+    );
+
+    setState(() {
+      _progressVisibility = false;
+      _value = value;
     });
 
     return _value;
