@@ -1,12 +1,33 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutterfire_ui/firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:swing_share/domain/model/post.dart';
+import 'package:swing_share/infra/model/post.dart' as dataModel;
 import 'package:swing_share/presentation/common/widget/last_indicator.dart';
 import 'package:swing_share/presentation/common/widget/timeline_content.dart';
 import 'package:swing_share/presentation/home/home_view_model.dart';
 import 'package:swing_share/presentation/video_player/flick_multi_manager.dart';
+
+final usersQuery = FirebaseFirestore.instance
+    .collection('users')
+    .doc('o9xTeiY3f6VOmll8sIeSpeZj05I3')
+    .collection('posts')
+    .orderBy('createdAt', descending: true);
+
+final postsQuery = FirebaseFirestore.instance
+    .collectionGroup('posts')
+    .orderBy('createdAt', descending: true);
+
+final postsTypeQuery = FirebaseFirestore.instance
+    .collectionGroup('posts')
+    .orderBy('createdAt', descending: true)
+    .withConverter<Post>(
+      fromFirestore: (snapshot, _) =>
+          dataModel.Post.fromMap(snapshot.data()!, snapshot.id).toEntity(),
+      toFirestore: (post, _) => {},
+    );
 
 class Timeline extends ConsumerWidget {
   const Timeline({
@@ -23,6 +44,22 @@ class Timeline extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final hasNext = ref.watch(homeVm).hasNext;
+
+    return FirestoreListView<Post>(
+      pageSize: 10,
+      query: postsTypeQuery,
+      itemBuilder: (context, snapshot) {
+        final post = snapshot.data();
+
+        return Container(
+          color: Colors.transparent,
+          child: TimelineContent(
+            post,
+            flickMultiManager: flickMultiManager,
+          ),
+        );
+      },
+    );
 
     return Scrollbar(
       child: CustomScrollView(

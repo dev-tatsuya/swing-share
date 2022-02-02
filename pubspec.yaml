@@ -28,7 +28,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   adaptive_dialog: ^1.1.0
-  cloud_firestore: ^2.4.0
+  cloud_firestore: ^3.1.7
   crypto: ^3.0.1
   cupertino_icons: ^1.0.3
   enum_to_string: ^2.0.1
@@ -44,6 +44,7 @@ dependencies:
   flutter_hooks: ^0.18.0
   flutter_localizations:
     sdk: flutter
+  flutterfire_ui: ^0.3.2
   freezed_annotation: ^0.14.2
   google_sign_in: ^5.0.5
   hive: ^2.0.4
@@ -59,7 +60,7 @@ dependencies:
   rxdart: ^0.27.1
   sign_in_with_apple: ^3.0.0
   video_player: ^2.2.5
-  video_trimmer: ^0.6.0
+  video_trimmer: ^1.0.0
   visibility_detector: ^0.2.2
   webview_flutter: ^2.0.10
 

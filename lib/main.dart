@@ -9,9 +9,14 @@ import 'package:swing_share/config/build_mode.dart';
 import 'package:swing_share/infra/model/video_path_ref.dart';
 import 'package:swing_share/presentation/base_page.dart';
 
+import 'gen/firebase_options_development.dart' as development;
+import 'gen/firebase_options_production.dart' as production;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: development.DefaultFirebaseOptions.currentPlatform,
+  );
   await Hive.initFlutter();
   Hive.registerAdapter(VideoPathRefAdapter());
 
@@ -35,5 +40,17 @@ class App extends StatelessWidget {
       theme: ThemeData(brightness: Brightness.dark),
       home: const BasePage(),
     );
+  }
+}
+
+FirebaseOptions getFirebaseOptions() {
+  const flavor = String.fromEnvironment('FLAVOR');
+  switch (flavor) {
+    case 'development':
+      return development.DefaultFirebaseOptions.currentPlatform;
+    case 'production':
+      return production.DefaultFirebaseOptions.currentPlatform;
+    default:
+      throw ArgumentError('Not available flavor');
   }
 }
